@@ -1,0 +1,271 @@
+<div class="container">
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Documentos y anexos</h1>
+        <p>Consulte la información detallada por entidad territorial, de las distribuciones del SGP desde el año 
+          2002 hasta la fecha, incluyendo los documentos y anexos que respaldan la asignación de dichos recursos en cada vigencia.
+        </p>
+    </div>
+  </div>
+  
+  <!-- Panel de filtros usando PrimeNG -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <!-- Vigencia a consultar -->
+      <div class="p-field vigencia-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="vigencia" 
+            [options]="vigencias" 
+            inputId="vigenciaSelect" 
+            [(ngModel)]="selected"
+            (onChange)="onVigenciaChange($event)"
+            optionValue="id"
+            optionLabel="label" 
+            placeholder="Vigencia">
+          </p-select>
+          <label for="vigenciaSelect">Vigencia</label>
+        </p-floatlabel> 
+      </div>
+
+      <!-- Departamento -->
+      <div class="p-field department-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="departamento" 
+            [options]="departments" 
+            inputId="departamentoSelect"
+            [(ngModel)]="departmentSelected"
+            (onChange)="onDepartmentChange($event)"
+            optionValue="id"
+            optionLabel="label" 
+            placeholder="Departamento">
+          </p-select>
+          <label for="departamentoSelect">Departamento</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Municipio -->
+      <div class="p-field town-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select 
+            id="municipio" 
+            [options]="towns" 
+            inputId="municipioSelect"
+            [(ngModel)]="townSelected"
+            (onChange)="onTownChange($event)"
+            optionValue="id"
+            optionLabel="label" 
+            placeholder="Municipio">
+          </p-select>
+          <label for="municipioSelect">Municipio</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Botón Actualizar -->
+      <div class="p-field update-button">
+        <!-- <button pButton type="button" 
+                icon="pi pi-filter" 
+                label="Aplicar filtros" 
+                class="p-button-primary btn-apply-filters"
+                (click)="updateData()">
+        </button> -->
+        <button pButton type="button" 
+                icon="pi pi-eraser" 
+                label="Limpiar filtros" 
+                class="p-button-secondary"
+                (click)="clearFilters()">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dates-buttons-container">
+    <div style="width: 84%;">
+      <p class="date-update">Fecha de consulta: {{ fechaActual }}</p>
+      <p class="date-update">Cifras en pesos corrientes</p>
+    </div>    
+  </div>
+
+  <!-- Título de sección -->
+  <div class="section-title">
+    <h3>{{ getDistributionTitle() }}</h3>
+  </div>
+
+  <!-- Sección principal con resumen y tabla -->
+  <div class="resume">
+    <div class="main-grid">
+      
+      <!-- Columna izquierda: Tabla -->
+      <div class="table-column">
+        <div class="card">
+          <p-treetable [value]="treeTableData" 
+                       dataKey="key" 
+                       [scrollable]="true"
+                       [scrollHeight]="treeTableData && treeTableData.length > 5 ? '380px' : 'auto'"
+                       styleClass="reports-treetable"
+                       [tableStyle]="{'min-width':'28rem'}"
+                       *ngIf="treeTableData.length > 0">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="table-header concept-header">Participación</th>
+                <th class="table-header vigencia-header">
+                  Valor
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+              <tr>
+                <td class="concept-cell">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <strong>{{ rowData.concepto }}</strong>
+                </td>
+                <td class="vigencia-cell">
+                  {{ rowData.vigencia | numberFormat }}
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <tr class="total-row">
+                <td class="concept-cell"><strong>Total General</strong></td>
+                <td class="vigencia-cell">
+                  <strong>{{ getTreeTableYearTotal() | numberFormat }}</strong>
+                </td>
+              </tr>
+            </ng-template>
+          </p-treetable>
+          
+          <!-- Mensaje cuando no hay datos -->
+          <div *ngIf="treeTableData.length === 0" style="padding: 1rem; text-align: center; color: #666;">
+            <p>No hay datos para mostrar para la vigencia: {{ selected }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna derecha: Gráfica de conceptos principales -->
+      <div class="metrics-column">        
+        <div class="col chart-column">
+          <div class="chart-container">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de notas informativas -->
+    <div class="final-notes-container">
+      <strong>NOTAS</strong>
+      <p class="final-note" *ngIf="selected == '2026'">
+        <strong>(1)</strong> Los recursos pendientes por distribuir corresponden a una parte de las doce doceavas de la participación para educación ($ 18.644 miles de millones) y las once doceavas de la asignación especial para el FONPET ($ 2.731 miles de millones)
+      </p>      
+    </div>
+
+    <!-- Botón Descargar Excel centrado -->
+    <div class="button-export-center">
+      <button pButton type="button" icon="pi pi-download" label="Exportar Excel" class="p-button-primary" (click)="exportToExcelReporte()"></button>   
+    </div>
+  </div>
+
+  <!-- Sección de documentos de distribución -->
+  <div class="resume">
+    <p class="title-graph">Documentos de distribución para la vigencia</p>
+    <p-table [value]="distributionData"
+             [paginator]="true"
+             [rows]="10"
+             [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template #header>
+        <tr>
+          <th class="table-header">Fecha Distribución</th>
+          <th class="table-header">Nombre</th>
+          <th class="table-header">Año</th>
+          <th class="table-header" style="text-align: right;">Monto Total</th>
+          <th class="table-header">Descripción</th>          
+          <th class="table-header">Anexos</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-data>
+        <tr>
+          <td>{{ data.fecha_distribucion}}</td>
+          <td [innerHTML]="data.nombre | sgpBold"></td>
+          <td>{{ data.anio }}</td>
+          <td style="text-align: right;">{{ data.total_distribucion | numberFormat }}</td>
+          <td [pTooltip]="data.descripcion" tooltipPosition="top" showDelay="500" hideDelay="200">
+            {{ truncateText(data.descripcion, 177) }}
+          </td>          
+          <td style="white-space: nowrap;">
+            <!-- <button pButton type="button" icon="pi pi-file-pdf" class="p-button-danger p-button-sm" 
+                    (click)="showDetails(data)" pTooltip="Ver detalles PDF"></button> -->
+            <button pButton type="button" icon="pi pi-file-excel" class="p-button-primary p-button-sm" 
+                    (click)="showFiles(data)" pTooltip="Ver archivos Excel" style="margin-left: 0.5rem;"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Diálogos -->
+  <!-- Diálogo de detalles -->
+  <p-dialog header="Detalles de distribución" 
+            [(visible)]="visibleDlgDetail" 
+            [modal]="true" 
+            [style]="{ width: '50vw' }" 
+            [dismissableMask]="true"
+            [appendTo]="'body'"
+            [position]="'center'"
+            [blockScroll]="true">
+    <div class="dialog-content">
+      <p><strong>Nombre:</strong> {{ distributionName }}</p>
+      <p><strong>Fecha:</strong> {{ distributionDate }}</p>
+      <p>Información detallada de la distribución seleccionada.</p>
+    </div>
+    <ng-template pTemplate="footer">
+      <button pButton type="button" label="Cerrar" icon="pi pi-times" 
+              class="p-button-secondary" (click)="visibleDlgDetail = false"></button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Diálogo de archivos -->
+  <p-dialog header="Archivos de distribución" 
+            [(visible)]="visibleDlgFiles" 
+            [modal]="true" 
+            [style]="{ width: '60vw' }" 
+            [dismissableMask]="true"
+            [appendTo]="'body'"
+            [position]="'center'"
+            [blockScroll]="true">
+    <div class="dialog-content">
+      <p><strong>Distribución:</strong> {{ distributionName }}</p>
+      <p><strong>Fecha:</strong> {{ distributionDate }}</p>
+      
+      <div class="files-list" style="margin-top: 1rem;">
+        <h4>Archivos disponibles:</h4>
+        <p-table [value]="distributionFiles" [tableStyle]="{ 'min-width': '30rem' }">
+          <ng-template #header>
+            <tr>
+              <th>Descripción documento</th>
+              <th>Tipo de archivo</th>
+              <th>Acciones</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-file>
+            <tr>
+              <td>{{ file.descripcion }}</td>
+              <td>{{ file.documento }}</td>
+              <td>
+                <button pButton type="button" icon="pi pi-download" 
+                        class="p-button-primary p-button-sm" 
+                        (click)="downloadFiles(file)" 
+                        pTooltip="Descargar archivo"></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <button pButton type="button" label="Cerrar" icon="pi pi-times" 
+              class="p-button-secondary" (click)="visibleDlgFiles = false"></button>
+    </ng-template>
+  </p-dialog>
+</div>

@@ -1,0 +1,569 @@
+.sgr-inicio-container {
+  padding: 1rem;
+  max-width: 1380px;
+  margin: 0 auto;
+  font-family: 'Work Sans', sans-serif;
+
+  .tabla-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 3rem 1rem;
+    min-height: 200px;
+    color: #103d6e;
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+  }
+
+  .gradient-banner {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-image: url('/assets/img/sgr/sgr-inicio.png');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: .5rem;
+    border-radius: 8px;
+
+    .gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 95%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        #f9fbfccc 0%,
+        rgb(53 95 147 / 31%) 100%
+      );
+      z-index: 1;
+    }
+
+    .banner-content {
+      position: relative;
+      margin-top: 1rem;
+      z-index: 2;
+      padding: 1rem;
+      max-width: 70%;
+      width: 1210px;
+
+      h1 {
+        font-size: 2rem;
+        margin-top: 2.25rem;
+        margin-bottom: 2.5rem;
+        color: #103d6e;
+        font-weight: bold;
+        text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+      }
+
+      p {
+        font-size: 1.35rem;
+        margin-bottom: 2rem;
+        color: #103d6e;
+        width: 80%;
+        font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+      }
+    }
+  }
+
+  // Fechas de actualización
+  .dates-buttons-container {
+    margin-bottom: 0.5rem;
+  }
+
+  .date-update {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #0943b5;
+    text-align: left;
+    margin-bottom: 0.125rem;
+  }
+
+  // Card principal de resumen
+  .resumen-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    padding: 1.5rem 2rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .resumen-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+
+    .resumen-titulo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0943b5;
+      margin: 0;
+    }
+  }
+
+  .vigencia-selector-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .vigencia-label-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #374151;
+      white-space: nowrap;
+    }
+  }
+
+  // KPI row
+  .kpi-row {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .kpi-item {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    text-align: center;
+
+    .kpi-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #6b7280;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .kpi-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .kpi-avance {
+      color: #0943b5;
+    }
+  }
+
+  .kpi-divider {
+    width: 1px;
+    background-color: #e5e7eb;
+    align-self: stretch;
+  }
+
+  // Badges de avance
+  .avance-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: 64px;
+    text-align: center;
+
+    &.badge-green {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #6ee7b7;
+
+      &::before {
+        content: '● ';
+        color: #10b981;
+      }
+    }
+
+    &.badge-orange {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fcd34d;
+
+      &::before {
+        content: '● ';
+        color: #f59e0b;
+      }
+    }
+  }
+
+  // Sección de notas como tarjeta
+  .notes-section {
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    margin-top: 1rem;
+
+    .notes-card {
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e0e0e0;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .card-title {
+        color: #000;
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin: 0;
+        text-align: left;
+      }
+
+      .final-note {
+        font-size: 0.75rem;
+        color: #0943b5;
+        text-align: left;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  // Sección de Herramientas y Recursos
+  .herramientas-recursos-section {
+    padding: 20px;
+    margin-top: 20px;
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+
+    h2 {
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: bold;
+      color: #6B4226;
+    }
+  }
+}
+
+.herramientas-cards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  align-items: stretch;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.herramienta-card {
+  background: linear-gradient(135deg, #0943b5 0%, #156082 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 19px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  height: 100%;
+  min-height: 120px;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(7, 67, 181, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    color: #0943b5;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow:
+      0 8px 25px rgba(7, 67, 181, 0.25),
+      0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  .card-icon-placeholder {
+    font-size: 2em;
+    flex-shrink: 0;
+
+    .sgr-icon {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+    }
+  }
+
+  .card-content {
+    flex-grow: 1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 5px;
+      font-size: 1.15em;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95em;
+      opacity: 0.9;
+      line-height: 1.4;
+      transition: all 0.3s ease;
+    }
+  }
+
+  &:hover .card-content {
+    h3 {
+      color: #0943b5;
+      font-weight: 700;
+    }
+
+    p {
+      color: #1a365d;
+      opacity: 1;
+    }
+  }
+
+  mat-icon {
+    color: #ffffff;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    margin-left: auto;
+    transition: all 0.3s ease;
+  }
+
+  &:hover mat-icon {
+    color: #0943b5;
+    transform: translateX(4px);
+  }
+}
+
+// Sobrescribir estilos de Angular Material
+:host ::ng-deep {
+  .mat-mdc-card {
+    --mdc-elevated-card-container-elevation: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .left-column .mat-mdc-card {
+    height: 140px;
+  }
+
+  .mat-mdc-card-header {
+    padding-bottom: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .mat-mdc-card-content {
+    padding-top: 0.5rem;
+    padding: 0 16px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .notes-card .mat-mdc-card-content {
+    display: block;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .mat-mdc-card-header-text {
+    width: 100% !important;
+  }
+}
+
+// TreeTable jerárquica
+:host ::ng-deep {
+  .p-treetable {
+    font-size: 0.9rem;
+
+    .p-treetable-thead > tr > th {
+      background-color: #f8f9fa !important;
+      color: #103d6e !important;
+      font-weight: 600 !important;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    .p-treetable-tbody > tr > td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #dee2e6;
+
+      &.concepto-cell {
+        /*font-weight: 600 !important;*/
+        color: #103d6e !important;
+      }
+    }
+
+    .p-treetable-thead > tr > th.col-number,
+    .p-treetable-tbody > tr > td.col-number,
+    .p-treetable-tfoot > tr > td.col-number {
+      text-align: right !important;
+    }
+
+    .p-treetable-thead > tr > th.col-avance,
+    .p-treetable-tbody > tr > td.col-avance {
+      text-align: center !important;
+    }
+
+    .total-row {
+      background-color: #f8f9fa;
+
+      td {
+        padding: 1rem 0.75rem;
+        border-top: 2px solid #dee2e6;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .vigencia-selector-inline .p-select {
+    min-width: 9rem;
+    font-size: 0.9rem;
+  }
+}
+
+// Sobrescribir estilos de PrimeNG
+:host ::ng-deep {
+  .p-select-label {
+    padding: .425rem !important;
+  }
+
+  .p-chart {
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    transform: translateZ(0) !important;
+    -webkit-font-smoothing: antialiased !important;
+
+    canvas {
+      max-width: 100% !important;
+      width: auto !important;
+      height: auto !important;
+      image-rendering: auto !important;
+      transform: translateZ(0) !important;
+      backface-visibility: hidden !important;
+      -webkit-font-smoothing: antialiased !important;
+      -moz-osx-font-smoothing: grayscale !important;
+      font-smooth: always !important;
+    }
+  }
+
+  .chart-container .p-chart {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+
+    canvas {
+      object-fit: contain !important;
+      image-rendering: auto !important;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 1024px) {
+  .sgr-inicio-container {
+    .main-panel {
+      .right-column .chart-container {
+        height: auto;
+        min-height: 400px;
+      }
+    }
+  }
+
+  .herramienta-card {
+    .card-content {
+      h3 {
+        font-size: 1.1em;
+      }
+
+      p {
+        font-size: 0.9em;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sgr-inicio-container {
+    padding: 0.5rem;
+
+    .resumen-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .kpi-row {
+      flex-direction: column;
+    }
+
+    .kpi-divider {
+      width: 100%;
+      height: 1px;
+    }
+  }
+
+  .herramientas-cards-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .sgr-inicio-container {
+    .kpi-item .kpi-value {
+      font-size: 1.2rem;
+    }
+  }
+
+  .herramienta-card {
+    .card-content {
+      h3 {
+        font-size: 1em;
+      }
+
+      p {
+        font-size: 0.85em;
+      }
+    }
+  }
+}

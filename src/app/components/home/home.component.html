@@ -1,47 +1,422 @@
 <div class="container">
-    <div class="banner">
-        <img src="/assets/img/banner_welcome.svg" alt="banner-welcome">
-        <!-- <button class="overlay-button">Sobre SICODIS</button> -->
+    <section aria-labelledby="titulo-bienvenida">
+    <div class="gradient-banner">
+      <div class="gradient-overlay"></div>
+      <div class="banner-content">
+        <h1 id="titulo-bienvenida">Bienvenido a SICODIS</h1>
+        <p>El Sistema de información y consulta de distribuciones de recursos "SICODIS", presenta información agregada y detallada,
+          correspondiente a las distribuciones de los recursos del Sistema General de Regalías (SGR), Sistema General de Participaciones (SGP) y la Regionalización del Presupuesto General de la Nación realizadas por el DNP.
+        </p>
+      </div>
     </div>
+    </section>
+    <section aria-label="Sistemas de información disponibles">
     <div class="reports">
-        <h1 class="reports-title">Últimos reportes</h1>
-        <mat-grid-list class="grid-styles" cols="4">
-            <mat-grid-tile class="grid-title-styles" *ngFor="let reportsItem of reports">
-                <app-reports-target [reports]="reportsItem"></app-reports-target>
-            </mat-grid-tile>
-        </mat-grid-list>
-        <h1 class="sicodis">¿Qué encontrará en SICODIS?</h1>
-        <p class="desc-sicodis">En SICODIS encontrará información detallada sobre la distribución de recursos asociada a:</p>
-        <mat-grid-list class="grid-styles" cols="2">
-            <mat-grid-tile class="grid-title-sicodis">
-                <div class="target">
-                    <img src="/assets/img/SGR.svg" alt="sgr">
-                    <img src="/assets/img/options-sgr.svg" alt="opt-sgr">
-                    <button (click)="redirectSGR()">Ver todos los reportes SGR</button>
+        <div class="grid-container">
+          <mat-grid-list [cols]="cols2" rowHeight="500" gutterSize="16">
+            <mat-grid-tile>
+              <p-card class="card-container sgp-card">
+                <div class="card-header">
+                  <img class="img-icon" src="/assets/img/icon-sgp.png" alt="Icono del Sistema General de Participaciones">
+                  <h2 class="sicodis-large-title">{{titleSGP}}</h2>
                 </div>
-            </mat-grid-tile>
-            <mat-grid-tile class="grid-title-sicodis">
-                <div class="target">
-                    <img src="/assets/img/SGP.svg" alt="sgp">
-                    <img src="/assets/img/options-sgp.svg" alt="opt-sgp">
-                    <button (click)="redirectSGR()">Ver todos los reportes SGP</button>
+                <div class="card-description">
+                  <p>{{descriptionSGP}}</p>
                 </div>
+                <div class="card-menu">
+                  <p-divider/>
+                  <button type="button" class="sicodis-item" (click)="redirectTo('sgp-documentos-anexos')">
+                    <span>Distribución presupuestal, documentos y anexos</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
+                  <p-divider/>
+                  <button type="button" class="sicodis-item" (click)="redirectTo('sgp-comparativa')">
+                    <span>Ficha comparativa de distribución</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
+                  <p-divider />
+                  <button type="button" class="sicodis-item" (click)="redirectTo('sgp-detalle-presupuestal')">
+                    <span>Ficha SGP - Presupuestal</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
+                </div>
+                <ng-template pTemplate="footer">
+                  <div class="card-footer">
+                    <button pButton type="button" label="Ver todos los reportes del SGP" (click)="redirectSGP()" class="p-button-primary"></button>
+                  </div>
+                </ng-template>
+              </p-card>
             </mat-grid-tile>
-        </mat-grid-list>
-    </div>
-    <div class="banner-questions">
-        <img class="banner-img-questions" src="/assets/img/questions.svg" alt="questions">
-        <img class="overlay-banner-questions" src="/assets/img/overlay-questions.svg" alt="overlay-questions">
-        <!-- <button class="overlay-button">Sobre SICODIS</button> -->
-    </div>
-    <div class="banner-questions">
-        <img class="banner-img-questions" src="/assets/img/history-sicodis.svg" alt="history-sicodis">
-    </div>
-    <div class="banner-questions">
-        <img class="banner-img-questions" src="/assets/img/applications.svg" alt="applications">
-    </div>
-    <div class="logo-colombia">
-        <img src="/assets/img/logo-colombia.svg" alt="logo-colombia">
+            <mat-grid-tile>
+              <p-card class="card-container sgr-card">
+                <div class="card-header">
+                  <img class="img-icon" src="/assets/img/icon-sgr.png" alt="Icono del Sistema General de Regalías">
+                  <h2 class="sicodis-large-title">{{titleSGR}}</h2>
+                </div>
+                <div class="card-description">
+                  <p>{{descriptionSGR}}</p>
+                </div>
+                <div class="card-menu">
+                  <p-divider/>
+                  <button type="button" class="sicodis-item" (click)="redirectTo('sgr-recaudo-mensual')">
+                    <span>Recaudo mensual</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
+                  <p-divider />
+                  <button type="button" class="sicodis-item" (click)="redirectTo('sgr-presupuesto-y-recaudo')">
+                    <span>Recaudo frente a presupuesto</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
+                  <p-divider />
+                  <button type="button" class="sicodis-item" (click)="redirectTo('reporte-funcionamiento')">
+                    <span>Administración y Sistema de Seguimiento del SGR</span>
+                    <span class="pi pi-angle-right" aria-hidden="true"></span>
+                  </button>
+                </div>
+                <ng-template pTemplate="footer">
+                  <div class="card-footer">
+                    <button pButton type="button" label="Ver todos los reportes del SGR" (click)="redirectSGR()" class="p-button-primary"></button>
+                  </div>
+                </ng-template>
+              </p-card>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </div>
+
+        <div class="grid-container" style="margin-top: 16px;">          
+              <p-card class="card-container pgn-card pgn-full-width">
+                <div class="card-header">
+                  <img class="img-icon" src="/assets/img/icon-pgn.png" alt="Icono del Presupuesto General de la Nación">
+                  <h2 class="sicodis-large-title">{{titlePGN}}</h2>
+                </div>
+                <div class="card-description">
+                  <p>{{descriptionPGN}}</p>
+                </div>
+                <ng-template pTemplate="footer">
+                  <div class="card-footer">
+                    <button pButton type="button" label="Ver información del PGN" (click)="redirectTo('pgn-regionalizacion')" class="p-button-primary"></button>
+                  </div>
+                </ng-template>
+              </p-card>          
+        </div>
+
+    </div> <!-- /reports -->
+    </section> <!-- /sistemas de información -->
+
+    <section aria-labelledby="titulo-cifras">
+    <div class="reports">
+    <h2 id="titulo-cifras" class="sicodis sicodis-subtitle">Consulte a continuación la información vigente de los dos sistemas</h2>
+    <p class="sicodis-p">Cifras en pesos corrientes</p>
+
+    <div class="assignment-cards">
+      <mat-grid-list [cols]="2" rowHeight="870px" gutterSize="8">
+        <mat-grid-tile style="align-items: flex-start;">
+          <mat-card class="card-container" style="height: 98%; display: flex; flex-direction: column;">
+            <h3 class="sicodis-subtitle">SGP</h3>
+            <p-table [value]="sgpItems" 
+                     [tableStyle]="{ 'min-width': '100%' }"
+                     styleClass="home-sgr-table">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="table-header">Concepto</th>
+                  <th class="table-header">Total Presupuesto</th>
+                  <th class="table-header">Avance Distribución</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr [ngClass]="{'total-row': item.isTotal}">
+                  <td [ngClass]="{'bold': item.isTotal || item.isFirst}">
+                    <strong *ngIf="item.isTotal || item.isFirst">{{item.concept}}</strong>
+                    <span *ngIf="!item.isTotal && !item.isFirst">{{item.concept}}</span>
+                  </td>
+                  <td [ngClass]="{'bold': item.isTotal || item.isFirst}" style="text-align: right;">
+                    <strong *ngIf="item.isTotal || item.isFirst">{{item.amount | numberFormat}}</strong>
+                    <span *ngIf="!item.isTotal && !item.isFirst">{{item.amount | numberFormat}}</span>
+                  </td>
+                  <td [ngClass]="{'bold': item.isTotal}" style="text-align: right;">
+                    <strong *ngIf="item.isTotal">{{item.progress | number:'1.2-2'}}%</strong>
+                    <span *ngIf="!item.isTotal">{{item.progress | number:'1.2-2'}}%</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+
+
+            <div style="text-align: center; padding-top: 1rem;padding-bottom: 1rem;">              
+              <button pButton type="button" 
+                      label="Más información" 
+                      class="p-button-primary" 
+                      (click)="redirectSGP()">
+              </button>              
+            </div>
+            
+            <!-- Gráfico donut de avance -->
+            <div style="padding: 1rem; text-align: center;">
+              <div style="position: relative; height: 200px; margin: 0 auto;">
+                <p-chart type="doughnut" 
+                         [data]="donutSgpData" 
+                         [options]="donutSgpOptions" 
+                         [style]="{'height': '200px'}"
+                         *ngIf="donutSgpData">
+                </p-chart>
+              </div>
+            </div>            
+            
+          </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile style="align-items: flex-start;">
+          <mat-card class="card-container" style="height: 98%; display: flex; flex-direction: column;">
+            <h3 class="sicodis-subtitle">SGR</h3>
+            <p-table [value]="sgrItems" 
+                     [tableStyle]="{ 'min-width': '100%' }"
+                     styleClass="home-sgr-table">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="table-header">Concepto</th>
+                  <th class="table-header">Total Presupuesto</th>
+                  <th class="table-header">Avance Distribución</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr [ngClass]="{'total-row': item.isTotal}">
+                  <td [ngClass]="{'bold': item.isTotal || item.isFirst}">
+                    <strong *ngIf="item.isTotal || item.isFirst">{{item.concept}}</strong>
+                    <span *ngIf="!item.isTotal && !item.isFirst">{{item.concept}}</span>
+                  </td>
+                  <td [ngClass]="{'bold': item.isTotal || item.isFirst}" style="text-align: right;">
+                    <strong *ngIf="item.isTotal || item.isFirst">{{item.amount | numberFormat}}</strong>
+                    <span *ngIf="!item.isTotal && !item.isFirst">{{item.amount | numberFormat}}</span>
+                  </td>
+                  <td [ngClass]="{'bold': item.isTotal}" style="text-align: right;">
+                    <strong *ngIf="item.isTotal">{{item.progress | number:'1.2-2'}}%</strong>
+                    <span *ngIf="!item.isTotal">{{item.progress | number:'1.2-2'}}%</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+            
+            <div style="text-align: center; padding-top: 1rem;padding-bottom: 1rem;">              
+              <button pButton type="button" 
+                      label="Detalle Inversión" 
+                      class="p-button-primary"
+                      (click)="redirectSGRInversion()">
+              </button>
+              <button pButton type="button" style="margin-left: 1rem;"
+                      label="Detalle Administración"
+                      class="p-button-primary"
+                      (click)="redirectSGRFuncionamiento()">
+              </button>
+              
+            </div>
+            
+            <!-- Gráficos donut SGR - Vertical -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1rem;">
+              <!-- Gráfico corrientes (naranja) -->
+              <div style="text-align: center;">
+                <div style="position: relative; height: 180px; margin: 0 auto;">
+                  <p-chart type="doughnut" 
+                           [data]="donutSgrCorrientesData" 
+                           [options]="donutSgrCorrientesOptions" 
+                           [style]="{'height': '180px'}"
+                           *ngIf="donutSgrCorrientesData">
+                  </p-chart>
+                </div>
+              </div>
+              
+              <!-- Gráfico otros (verde agua) -->
+              <div style="text-align: center;padding-top: 5.5rem;">
+                <div style="position: relative; height: 180px; margin: 0 auto;">
+                  <p-chart type="doughnut" 
+                           [data]="donutSgrOtrosData" 
+                           [options]="donutSgrOtrosOptions" 
+                           [style]="{'height': '180px'}"
+                           *ngIf="donutSgrOtrosData">
+                  </p-chart>
+                </div>
+              </div>
+            </div>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
     </div>
 
+    <div class="grid-container geovisor-section">
+      <div class="geovisor-banner">
+        <img class="geovisor-banner__icon" src="/assets/img/icono-geovisor.png" alt="Icono del Geovisor">
+        <div class="geovisor-banner__content">
+          <h2 class="geovisor-banner__title">{{titleGeovisor}}</h2>
+          <p class="geovisor-banner__subtitle">{{subtitleGeovisor}}</p>
+          <p class="geovisor-banner__description">{{descriptionGeovisor}}</p>
+        </div>
+        <div class="geovisor-banner__action">
+          <button type="button" class="geovisor-banner__button" (click)="redirectTo('mapa-recursos')">
+            <i class="pi pi-map"></i>
+            <span class="geovisor-banner__divider"></span>
+            <span>Ingresar al Geovisor</span>
+            <i class="pi pi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    </div> <!-- /reports cifras -->
+    </section> <!-- /cifras -->
+
+    <section aria-labelledby="titulo-interes">
+    <div class="reports">
+    <h2 id="titulo-interes" class="reports-title">Información de Interés</h2>
+
+    <div class="grid-container" style="margin-bottom: 2.5rem;">
+      <mat-grid-list [cols]="cols" rowHeight="300px" gutterSize="16">
+        <mat-grid-tile *ngFor="let card of cards">
+          <a [href]="card.link" target="_blank" rel="noopener" class="link-wrapper">
+            <mat-card class="card-container">
+              <img mat-card-image [src]="card.imageUrl" [alt]="card.title + ' - Imagen ilustrativa'">
+              <p class="description">{{card.description}}</p>
+              <mat-card-header>
+                <h3 class="sicodis-title">{{card.title}}</h3>
+              </mat-card-header>                
+            </mat-card>
+          </a>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+
+
+
+    
+    </div> <!-- /reports interes -->
+    </section> <!-- /interes -->
+
+    <div class="sicodis-questions" style="display:none;">
+      <img class="overlay-questions" src="/assets/img/overlay-questions.svg" alt="Imagen decorativa de preguntas frecuentes">
+      <div>
+        <h2 class="title-questions">¿Tiene Preguntas acerca de SICODIS?</h2>
+      </div>
+      <div>
+        <p>
+          En SICODIS encontrará información detallada sobre la distribución de recursos asociada a diferentes recursos
+        </p>
+      </div>
+      <div style="padding-bottom: 1rem;">
+        <ul>
+          <li>
+            ¿Cómo encontrar un reporte?
+          </li>
+          <li>
+            ¿Cómo descargar un elemento?
+          </li>
+          <li>
+            No se preocupe, acá respondemos sus preguntas
+          </li>
+        </ul>
+      </div>
+      <div>
+        <button pButton type="button" label="Ir a preguntas frecuentes" class="p-button-primary" (click)="redirectToFAQ()"></button>
+      </div>
+    </div>
+   
+
+    <!-- ================= MODAL VIDEO BIENVENIDA ================= -->
+    <!-- <p-dialog 
+      header="Bienvenido a SICODIS"
+      [(visible)]="showVideo"
+      [modal]="true"
+      appendTo="body"
+      [closable]="true"
+      [dismissableMask]="true"
+      [style]="{width:'70vw', top:'5vh'}"
+      [breakpoints]="{'960px':'95vw'}">
+
+      <div style="position: relative; padding-top: 56.25%;">
+        <video
+          controls
+          autoplay
+          muted
+          playsinline
+          style="position:absolute; inset:0; width:100%; height:100%;"
+        >
+          <source
+            src="https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/SICODIS/TutorialSICODIS.mp4"
+            type="video/mp4"
+          />
+          Tu navegador no soporta video HTML5.
+        </video>
+      </div>
+
+    </p-dialog> -->
+
+
+    <!-- =========================================================== -->
+
+    <!-- ================= BANNER INTELIGENTE ================= -->
+    <!-- Configurado dinámicamente desde el panel de administración -->
+<p-dialog
+  [(visible)]="showBanner"
+  [modal]="true"
+  appendTo="body"
+  [closable]="true"
+  [dismissableMask]="true"
+  (onHide)="closeBanner()"
+  [showHeader]="true"
+  [style]="{width:'42vw', 'max-height':'90vh'}"
+  [contentStyle]="{'overflow-y':'auto', 'padding':'1rem', 'max-height':'85vh'}"
+  [breakpoints]="{'1200px':'50vw', '960px':'60vw', '640px':'90vw'}">
+
+  <ng-template pTemplate="header">
+    <div style="width: 100%; display: flex; align-items: center; gap: 0.5rem;">
+      <i
+        [class]="'pi ' + (bannerConfig?.tipo === 'warning' ? 'pi-exclamation-triangle' :
+                          bannerConfig?.tipo === 'error' ? 'pi-times-circle' :
+                          bannerConfig?.tipo === 'success' ? 'pi-check-circle' : 'pi-info-circle')"
+        [style.color]="bannerConfig?.tipo === 'warning' ? '#fbbf24' :
+                       bannerConfig?.tipo === 'error' ? '#ef4444' :
+                       bannerConfig?.tipo === 'success' ? '#10b981' : '#3b82f6'"
+        style="font-size: 1.5rem;">
+      </i>
+      <span style="font-weight: bold; font-size: 1.1rem;">
+        {{ bannerConfig?.titulo || 'Información importante' }}
+      </span>
+    </div>
+  </ng-template>
+
+  <div class="banner-content">
+    <!-- Banner HTML estructurado: Alertas de Caja -->
+    <div *ngIf="bannerConfig?.template === 'alertas-caja'">
+      <app-banner-alertas-caja></app-banner-alertas-caja>
+    </div>
+
+    <!-- Banner tradicional (imagen + texto) -->
+    <ng-container *ngIf="bannerConfig?.template !== 'alertas-caja'">
+      <!-- Mensaje de texto -->
+      <div *ngIf="bannerConfig?.mensaje" style="margin-bottom: 1rem; line-height: 1.6;">
+        <p [innerHTML]="bannerConfig?.mensaje"></p>
+      </div>
+
+      <!-- Imagen si está configurada -->
+      <div *ngIf="bannerConfig?.imagen_url" style="text-align: center; margin-bottom: 1rem;">
+        <img
+          [src]="bannerConfig?.imagen_url"
+          [alt]="bannerConfig?.titulo"
+          style="width: 100%; height: auto; max-width: 600px; border-radius: 4px;"
+        />
+      </div>
+
+      <!-- Botón de acción opcional -->
+      <div *ngIf="bannerConfig?.boton_texto" style="text-align: center; margin-top: 1.5rem;">
+        <button
+          pButton
+          type="button"
+          [label]="bannerConfig?.boton_texto ?? 'Ver más'"
+          (click)="onBannerButtonClick()"
+          class="p-button-primary"
+          style="min-width: 200px;">
+        </button>
+      </div>
+    </ng-container>
+  </div>
+
+</p-dialog>
+
+<!-- =========================================================== -->
 </div>

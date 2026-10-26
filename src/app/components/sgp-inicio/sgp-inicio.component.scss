@@ -1,0 +1,507 @@
+.container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 1rem;  
+}
+
+.gradient-banner {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/assets/img/banner-sgp.jpg');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  display: flex;
+  margin-bottom: .5rem;
+  border-radius: 8px;
+  
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: linear-gradient(90deg, #f9fbfccc 0%, rgb(53 95 147 / 31%) 100%);      
+  }
+
+  .banner-content {
+    position: relative;
+    margin-top: 1rem;
+    z-index: 2;
+    padding: 1rem;
+    max-width: 80%;    
+        
+    h1 {
+      font-size: 2rem;
+      margin-top: 2.25rem;
+      margin-bottom: 2.5rem;
+      color: #e4e6eb;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+      color: #103d6e;
+    }
+
+    p {
+        font-size: 1.35rem;
+        margin-bottom: 1rem;
+        color: #103d6e;     
+        width: 80%;
+        font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+      }
+  }
+}
+
+.date-update {
+  font-size: 0.65rem;
+  font-weight: bold;
+  color: #0943b5;
+  text-align: left;
+  margin-bottom: 0.125rem;
+}
+
+.dates-buttons-container {
+  display: flex;
+  width: 100%;
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem;
+}
+
+// ── Card principal de resumen ──────────────────────────────────────────────
+.resumen-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem 2rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.resumen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+
+  .resumen-titulo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0943b5;
+    margin: 0;
+  }
+}
+
+.vigencia-selector-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .vigencia-label-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+  }
+
+  ::ng-deep .p-select {
+    min-width: 7rem;
+    font-size: 0.9rem;
+  }
+}
+
+// ── KPI row ────────────────────────────────────────────────────────────────
+.kpi-row {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.kpi-item {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  text-align: center;
+
+  .kpi-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .kpi-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .kpi-avance {
+    color: #0943b5;
+  }
+}
+
+.kpi-divider {
+  width: 1px;
+  background-color: #e5e7eb;
+  align-self: stretch;
+}
+
+// ── Tabla de participaciones ───────────────────────────────────────────────
+.tabla-participaciones {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+
+  thead tr {
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  th {
+    padding: 0.65rem 1rem;
+    text-align: left;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #093461;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: #f9fafb;
+    }
+  }
+
+  td {
+    padding: 0.6rem 1rem;
+    color: #374151;
+  }  
+
+  .col-number {
+    text-align: right;
+  }
+
+  .col-avance {
+    text-align: center;
+  }
+}
+
+// ── Total row ─────────────────────────────────────────────────────────────
+.total-row {
+  border-top: 2px solid #e5e7eb;
+  background: #f9fafb;
+
+  td {
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+  }
+}
+
+// ── Barra de progreso (Total SGP) ─────────────────────────────────────────
+.progress-bar-container {
+  width: 100%;
+  height: 12px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0943b5 0%, #0c9bd3 100%);
+    border-radius: 6px;
+    transition: width 0.6s ease;
+  }
+}
+
+// ── Badges de avance ───────────────────────────────────────────────────────
+.avance-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 64px;
+  text-align: center;
+
+  &.badge-green {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+
+    &::before {
+      content: '● ';
+      color: #10b981;
+    }
+  }
+
+  &.badge-orange {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+
+    &::before {
+      content: '● ';
+      color: #f59e0b;
+    }
+  }
+}
+
+// ── TreeTable jerárquica ───────────────────────────────────────────────────
+:host ::ng-deep {
+  .p-treetable {
+    font-size: 0.9rem;
+
+    .p-treetable-thead > tr > th {
+      background-color: #f8f9fa !important;
+      color: #103d6e !important;
+      font-weight: 600 !important;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    .p-treetable-tbody > tr > td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #dee2e6;      
+      &.concepto-cell {
+        font-weight: 600 !important;
+        color: #103d6e !important;
+      }
+    }
+
+    // Estilos para nodos de primer nivel (padres)
+    .p-treetable-tbody > tr:not([aria-level="2"]):not([aria-level="3"]) > td.concepto-cell {
+      font-weight: 700 !important;
+      color: #103d6e !important;
+    }
+
+    .p-treetable-thead > tr > th.col-number {
+      text-align: right !important;
+    }
+
+    .p-treetable-tbody > tr > td.col-number {
+      text-align: right !important;
+      /*font-family: monospace;*/
+    }
+
+    .p-treetable-thead > tr > th.col-avance {
+      text-align: right !important;
+    }
+
+    .p-treetable-tbody > tr > td.col-avance {
+      text-align: right !important;
+    }
+
+    .p-treetable-tfoot > tr > td.col-number {
+      text-align: right !important;
+    }
+
+    .total-row {
+      background-color: #f8f9fa;
+      font-weight: bold;
+
+      td {
+        padding: 1rem 0.75rem;
+        border-top: 2px solid #dee2e6;
+      }
+    }
+  }
+}
+
+.final-notes-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--p-surface-50);
+  border-radius: 6px;
+  border-left: 4px solid var(--p-primary-color);
+  
+  strong {
+    color: var(--p-primary-color);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  .final-note {
+    margin: 0.25rem 0;
+    font-size: 0.8rem;
+    color: var(--p-text-color);
+    line-height: 1.4;
+  }
+}
+
+
+.herramientas-recursos-section {
+  padding: 20px;
+  margin-top: 20px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+
+  h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: #28a745;
+  }
+}
+
+.herramientas-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  align-items: stretch;
+  width: 60%;
+  margin: 0 auto;
+}
+
+.herramienta-card {
+  background: linear-gradient(135deg, #0943b5 0%, #156082 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 19px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  height: 100%;
+  min-height: 80px;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(7, 67, 181, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    color: #0943b5;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+      0 8px 25px rgba(7, 67, 181, 0.25),
+      0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  .card-icon-placeholder {
+    font-size: 2em;
+    flex-shrink: 0;
+    
+    .sgp-icon {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;      
+    }
+  }
+
+  .card-content {
+    flex-grow: 1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    h3 {
+      margin-top: 0;
+      margin-bottom: 5px;
+      font-size: 1.3em;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 1.1em;
+      opacity: 0.9;
+      line-height: 1.4;
+      transition: all 0.3s ease;
+    }
+  }
+
+  &:hover .card-content {
+    h3 {
+      color: #0943b5;
+      font-weight: 700;
+    }
+    
+    p {
+      color: #1a365d;
+      opacity: 1;
+    }
+  }
+
+  mat-icon {
+    color: #ffffff;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    margin-left: auto;
+    transition: all 0.3s ease;
+  }
+
+  &:hover mat-icon {
+    color: #0943b5;
+    transform: translateX(4px);
+  }
+}
+
+// Responsive design
+@media (max-width: 1199px) {
+  .herramienta-card {
+    display: grid;
+    .card-content {
+      h3 {
+        font-size: 1.1em;
+      }      
+      p {
+        font-size: 0.9em;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .herramientas-cards-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .herramienta-card {
+    .card-content {
+      h3 {
+        font-size: 1em;
+      }
+      
+      p {
+        font-size: 0.85em;
+      }
+    }
+  }
+}

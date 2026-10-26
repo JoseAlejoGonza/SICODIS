@@ -1,0 +1,768 @@
+// Sobrescribir estilos de PrimeNG
+:host ::ng-deep {
+
+  .p-dialog-header{
+    padding: .5rem;
+  }
+
+  .p-multiselect-label {
+    padding: .425rem !important;
+  }
+  .p-select-label {
+    padding: .425rem !important;
+  }
+  .p-button {
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+}
+.sicodis-container {
+  padding: 1rem;
+  max-width: 1320px;
+  margin: 0 auto;
+  font-family: "Work Sans", sans-serif;
+
+  // Banner styles (from reporte-funcionamiento)
+  .gradient-banner {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background-image: url('/assets/img/sgr/sgr-recaudo-vs-presupuesto.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: .5rem;
+    border-radius: 8px;         
+    
+    .gradient-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 95%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        #e5e6e8b5 0%,
+        rgba(255, 255, 255, 0.01) 100%
+      );
+      z-index: 1;
+    }
+
+    .banner-content {
+      position: relative;
+      margin-top: 1rem;
+      z-index: 2;
+      padding: 1rem;
+      max-width: 70%;      
+      width: 1210px;
+      color: white;
+      
+      h1 {
+        font-size: 2rem;
+        margin-top: 2.25rem;
+        margin-bottom: 2.5rem;
+        color: #1a408c;
+        font-weight: bold;
+      }
+      
+      p {
+        font-size: 1.35rem;
+        margin-bottom: 2rem;
+        color: #264a70;        
+        width: 80%;
+        font-weight: 500;
+      }
+    }
+  }
+
+  // Date update styles
+  .date-update {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #0943b5;
+    text-align: left;
+    margin-bottom: 0.125rem;
+  }
+
+  // Panel de filtros (from reporte-funcionamiento)
+  .filters-panel {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: .25rem;
+    border: 1px solid #dee2e6;
+    width: 100%;
+
+    .filters-row {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      font-size: 12px;
+      
+      .p-field {
+        flex: 1;
+        min-width: 140px;
+
+        &.vigencia-select {
+          min-width: 140px;
+        }
+
+        &.tipo-ingreso-select {
+          min-width: 150px;
+        }
+
+        &.asignaciones-select {
+          min-width: 210px;
+        }
+
+        &.search-type-select {
+          min-width: 180px;
+        }
+
+        &.dpto-select {
+          min-width: 190px;
+        }
+
+        &.entity-select {
+          min-width: 190px;
+        }
+
+        &.detail-entity-select {
+          min-width: 20190px0px;
+        }
+
+        &.apply-filters {
+          flex: 0 0 auto;
+          min-width: auto;
+        }
+
+        &.clear-filters {
+          flex: 0 0 auto;
+          min-width: auto;
+        }
+      }
+
+      .p-multiselect {
+        flex: 0 0 auto;
+        width: 190px;
+      }      
+    }
+  }
+}
+
+// Sección principal
+.main-content {
+  margin-bottom: 2rem;
+
+  .mat-grid-tile {
+    .mat-grid-tile-content {
+      padding: 1rem;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+// Sección de tarjetas
+.cards-section {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .section-title {
+    color: #004583;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+
+  .mat-grid-list {
+    flex: 1;
+  }
+
+  // Forzar siempre 2 columnas en pantallas grandes
+  .cards-grid {
+    :host ::ng-deep .mat-grid-list {
+      .mat-grid-tile {
+        width: calc(50% - 6px) !important; // 50% menos la mitad del gutter
+      }
+    }
+  }
+}
+
+// Tarjetas financieras
+.financial-card {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-title {
+    color: #75432c;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+    text-align: left;
+  }
+
+  .card-value {
+    color: #004583;
+    font-size: 1.4rem;
+    font-weight: 800;
+    text-align: center;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  &.empty-card {
+    background: transparent;
+    border: 2px dashed #d1d5db;
+    box-shadow: none;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+}
+
+// Sección del gráfico
+.chart-section {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .section-title {
+    color: #004583;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+
+  .chart-container {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    
+    :host ::ng-deep {
+      .p-chart {
+        height: 100% !important;
+        
+        canvas {
+          height: 100% !important;
+        }
+      }
+    }
+  }
+}
+
+// Sección de gráficos de dona
+.donuts-section {
+  width: 100%;
+  margin-bottom: 2rem;
+
+  .section-title {
+    color: #004583;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+
+  .donuts-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .donut-card {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .donut-title {
+        color: #374151;
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 1rem 0;
+        text-align: center;
+        line-height: 1.2;
+      }
+
+      .donut-chart {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        :host ::ng-deep {
+          .p-chart {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            
+            canvas {
+              max-width: 300px !important;
+              max-height: 300px !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Separador
+.divider {
+  height: 2px;
+  background: linear-gradient(90deg, #004583 0%, #3b82f6 50%, #004583 100%);
+  margin: 3rem 0;
+  border-radius: 2px;
+}
+
+// Sección de tabla
+.table-section {
+  .table-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+
+    .reports-title {
+      color: #004583;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .filter-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+
+      .p-field {
+        flex: 0 0 auto;
+        min-width: 200px;
+        &.vigencia-select {
+          min-width: 225px;
+        }
+      }
+    }
+  }
+}
+
+.expandable-column {
+    cursor: pointer !important;
+    position: relative;
+    background-color: #E6EFFD !important;
+}
+
+.col-expanded {
+  background-color: #F6F8F9 !important;
+  font-size: 11px !important;
+}
+
+clear-filters{
+    position: absolute;
+    right: 1px;
+}
+
+// Estilos para la tabla
+:host ::ng-deep {
+
+  .p-select {
+    width: 150px;
+  }
+  .p-treetable {
+
+    .p-treetable-header {
+      background: #fff;
+    }
+    .p-treetable-thead > tr > th {
+      background-color: #f8fafc;
+      color: #374151;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border-bottom: 2px solid #004583;
+      text-align: center;
+    }
+
+    .p-treetable-tbody > tr {
+      &:hover {
+        background-color: #f1f5f9;
+      }
+
+      td {
+        font-size: 0.775rem;
+        padding: 0.75rem;
+
+        &.text-right {
+          text-align: right;
+        }
+
+        &.text-center {
+          text-align: center;
+        }
+
+        &.text-left {
+          text-align: left;
+        }
+
+        .font-bold {
+          font-weight: 500;
+          color: #374151;
+        }
+      }
+    }
+  }
+
+  .p-button {
+    font-family: "Work Sans", sans-serif;
+    font-weight: normal;
+    border-radius: 24px;
+    padding: 0.5rem 0.5rem;    
+  }
+
+  .p-select {
+    .p-select-label {
+      font-size: 0.875rem;
+      font-weight: normal;
+    }
+  }
+
+  .p-floatlabel {
+    label {
+      font-family: "Work Sans", sans-serif;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+  }
+}
+
+// Styles for the filter/options bar integrated from comparativo-iac-vs-presupuesto
+.options-years {
+  display: flex; // Start with flex display for mobile, will be overridden by media query
+  flex-direction: column; // Stack items vertically on mobile
+  gap: 9px; // Consistent gap for mobile
+  margin-bottom: 1rem; // Space below the filter bar
+  width: 100%; // Ensure it takes full width within caption-container
+
+  @media (min-width: 768px) { // Styles for medium screens and up
+    flex-direction: row; // Arrange items in a row
+    flex-wrap: wrap; // Allow wrapping
+    align-items: flex-start; // Align items to the start of the cross axis
+
+    // Target direct children divs (which should have .p-field class)
+    & > .p-field {
+      flex: 0 0 auto; // Don't grow or shrink, base size on content or fixed width
+      // width: 230px; // Default fixed width for most filter dropdowns
+
+      // Last two .p-field elements (buttons: Consultar, Exportar)
+      // Assuming they are indeed the last two direct children with .p-field
+      &:nth-last-child(-n+1):not(:first-child) { // Ensure not also the first child if few items
+        align-self: flex-end; // Align buttons to the bottom of the flex line if items wrap
+                               // or to the baseline if single line.
+        margin-top: 1px;      // Minor alignment tweak, might need adjustment
+        width: auto;          // Let buttons size to their content (label + icon)
+        position: absolute;
+        right: 1px;
+      }
+    }
+  }
+}
+
+.caption-container {
+  display: flex;
+  flex-direction: column; // Stack title, options-years, and instruction-text vertically
+  align-items: flex-start; // Align items to the left
+  padding-bottom: 10px; // Keep padding
+
+  .reports-title {
+    font-size: 1.5em; // Keep existing font size
+    font-weight: bold; // Keep existing font weight
+    margin-bottom: 1rem; // Add space after the title, before options-years
+  }
+
+  // .instruction-text styling can remain as it was if not specified here,
+  // or be ensured:
+  .instruction-text {
+      font-size: 0.9em;
+      color: #555;
+      font-weight: normal;      
+  }
+}
+
+// Estilos para botones centrados debajo de la tabla
+.table-actions-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+
+  .export-excel-btn {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 500;
+    border-radius: 24px;
+        
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+  }
+
+  .historic-split-btn {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 500;
+    border-radius: 8px;
+    
+    :host ::ng-deep {
+      .p-splitbutton-defaultbutton,
+      .p-splitbutton-menubutton {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-family: "Work Sans", sans-serif;
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+      }
+      
+      .p-splitbutton-defaultbutton {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      
+      .p-splitbutton-menubutton {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+    }
+  }
+}
+
+// Responsive para botones centrados
+@media (max-width: 768px) {
+  .table-actions-centered {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    
+    .export-excel-btn,
+    .historic-split-btn {
+      width: 100%;
+      max-width: 250px;
+    }
+  }
+}
+
+// Sección de notas
+.notes-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+
+  .notes-title {
+    color: #004583;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    text-align: left;
+    font-family: "Work Sans", sans-serif;
+  }
+
+  .notes-content {
+    .note-item {
+      color: #374151;
+      font-size: 0.9rem;
+      font-family: "Work Sans", sans-serif;
+      font-weight: 400;
+      line-height: 1.5;
+      margin: 0 0 0.5rem 0;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+  
+
+// Responsive para sección de notas
+@media (max-width: 768px) {
+  .notes-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    
+    .notes-title {
+      font-size: 1rem;
+    }
+    
+    .notes-content {
+      .note-item {
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .sicodis-container {
+    padding: 1rem;
+  }
+
+  // En dispositivos móviles, cambiar a 1 columna para las tarjetas
+  .cards-section {
+    .cards-grid {
+      :host ::ng-deep .mat-grid-list {
+        .mat-grid-tile {
+          width: 100% !important;
+        }
+      }
+    }
+  }
+
+  .financial-card {
+    .card-title {
+      font-size: 0.8rem;
+    }
+
+    .card-value {
+      font-size: 1.2rem;
+    }
+  }
+
+  .section-title {
+    font-size: 1.25rem !important;
+  }
+
+  // Responsividad para gráficos de dona
+  .donuts-section {
+    .donuts-container {
+      flex-direction: column;
+      gap: 1rem;
+
+      .donut-card {
+        .donut-title {
+          font-size: 0.9rem;
+        }
+
+        .donut-chart {
+          :host ::ng-deep {
+            .p-chart {
+              canvas {
+                max-width: 250px !important;
+                max-height: 250px !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .table-section {
+    .table-header {
+      .filter-section {
+        .p-field {
+          min-width: 100%;
+          
+          &.vigencia-select {
+            min-width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  // Asegurar 1 columna en móviles muy pequeños
+  .cards-section {
+    .cards-grid {
+      :host ::ng-deep .mat-grid-list {
+        .mat-grid-tile {
+          width: 100% !important;
+        }
+      }
+    }
+  }
+
+  .financial-card {
+    .card-title {
+      font-size: 0.75rem;
+    }
+
+    .card-value {
+      font-size: 1rem;
+    }
+  }
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.toggle-icon{
+  cursor: pointer;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  z-index: 9999;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

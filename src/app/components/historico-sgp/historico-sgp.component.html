@@ -1,0 +1,229 @@
+<div class="container">
+  <!-- Header section from reports-sgp lines 2-13 -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Histórico Sistema General de Participaciones</h1>
+        <p>Consulte la información histórica de las distribuciones del SGP desde el año 2002 hasta la vigencia actual, desagregada por entidad territorial y concepto.
+ 	 	 	 	</p>
+    </div>
+  </div>
+  
+  <!-- Filters section - Primera fila -->
+  <div class="filters-section">
+    <!-- Panel de filtros usando PrimeNG -->
+    <div class="filters-panel">
+      <div class="filters-row">
+        <!-- Vigencia a consultar (multi-select) -->
+        <div class="p-field vigencia-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-multiselect 
+              id="vigencia" 
+              [options]="infoResume" 
+              inputId="vigenciaSelect" 
+              [(ngModel)]="selectedYears"
+              (onChange)="onVigenciaChange($event)"
+              optionValue="year"
+              optionLabel="year" 
+              [maxSelectedLabels]="2"
+              selectedItemsLabel="{0} vigencias seleccionadas">
+            </p-multiselect>
+            <label for="vigenciaSelect">Vigencia</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Departamento -->
+        <div class="p-field department-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="departamento" 
+              [options]="departments" 
+              inputId="departamentoSelect"
+              [(ngModel)]="departmentSelected"
+              (onChange)="onDepartmentChange($event)"
+              optionValue="id"
+              optionLabel="label" 
+              placeholder="Departamento">
+            </p-select>
+            <label for="departamentoSelect">Departamento</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Municipio -->
+        <div class="p-field town-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="municipio" 
+              [options]="towns" 
+              inputId="municipioSelect"
+              [(ngModel)]="townSelected"
+              (onChange)="onTownChange($event)"
+              optionValue="id"
+              optionLabel="label"
+              placeholder="Municipio">
+            </p-select>
+            <label for="municipioSelect">Municipio</label>
+          </p-floatlabel>
+        </div>
+        <!-- <button pButton type="button" 
+              icon="pi pi-filter" 
+              label="Aplicar Filtros" 
+              class="p-button-primary"
+              (click)="applyFilters()">
+        </button> -->
+        <button pButton type="button" 
+                icon="pi pi-eraser" 
+                label="Limpiar filtros" 
+                class="p-button-secondary"
+                (click)="clearFilters()">
+        </button>
+      </div>
+    </div>    
+  </div>
+
+  <div class="dates-buttons-container">
+    <div style="width: 84%;">
+      <p class="date-update">Fecha de consulta: {{ fechaActual }}</p>
+      <p class="date-update">Cifras en pesos corrientes</p>
+    </div>    
+  </div>
+
+  <!-- Graphics section - Gráfico de barras apiladas (Primera sección) -->
+  <div class="graphics-section">
+    <div class="single-chart-container">
+      <p-card class="chart-card">
+        <ng-template pTemplate="header">
+          <div>
+            <h3 class="chart-title">Evolución histórica por participaciones</h3>
+            <p class="chart-subtitle">Cifras en pesos corrientes</p>
+          </div>
+        </ng-template>
+        <div class="chart-container" style="position: relative;">
+          <div *ngIf="isLoadingChart" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;">
+            <p-progress-spinner 
+              [style]="{'width': '50px', 'height': '50px'}" 
+              strokeWidth="4" 
+              fill="transparent" 
+              animationDuration="1s">
+            </p-progress-spinner>
+          </div>
+          <p-chart 
+            type="bar" 
+            [data]="stackedBarChartData" 
+            [options]="stackedBarChartOptions"
+            height="400px" width="800px"
+            [style]="{'opacity': isLoadingChart ? '0.3' : '1'}">
+          </p-chart>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- Table section - Segunda sección -->
+  <div class="table-section">
+    <div class="card">
+      <!-- Loading indicator -->
+      <div *ngIf="isLoadingTable" style="padding: 1rem; text-align: center;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="pi pi-spin pi-spinner" style="font-size: 1.2rem; color: #0f4987;"></i>
+          <span style="color: #0f4987; font-size: 0.9rem;">Actualizando tabla...</span>
+        </div>
+      </div>
+      
+      <!-- Scroll horizontal indicator -->
+      <div *ngIf="selectedYears.length > 5 && treeTableData.length > 0" style="padding: 0.5rem; background: #e3f2fd; border-radius: 4px; margin-bottom: 0.5rem; text-align: center;">
+        <i class="pi pi-arrow-right-arrow-left" style="color: #1976d2; margin-right: 0.5rem;"></i>
+        <span style="color: #1976d2; font-size: 0.85rem;">Desliza horizontalmente para ver las vigencias ({{ selectedYears.length }} seleccionadas)</span>
+      </div>
+
+      <!-- Debug info -->
+      <div *ngIf="treeTableData.length === 0 && !isLoadingTable" style="padding: 1rem; text-align: center; color: #666;">
+        <p>No hay datos para mostrar. Años seleccionados: {{ selectedYears.join(', ') }}</p>
+        <p>Total de nodos: {{ treeTableData.length }}</p>
+      </div>
+      
+      <p-treetable #treeTable
+                   [value]="treeTableData" 
+                   dataKey="key" 
+                   [scrollable]="true"
+                   [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
+                   [styleClass]="selectedYears.length > 5 ? 'historico-treetable horizontal-scroll' : 'historico-treetable'"
+                   [tableStyle]="{'min-width':'20rem'}"
+                   *ngIf="treeTableData.length > 0">
+        <ng-template>
+          <colgroup>
+            <col *ngFor="let year of selectedYears" style="width: 500px;">
+          </colgroup>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="table-header concept-header">Participación</th>
+            <th *ngFor="let year of selectedYears" 
+                class="table-header vigencia-header">
+              {{ year }}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr>
+            <td class="concept-cell">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              <strong>{{ rowData.concepto }}</strong>
+            </td>
+            <td *ngFor="let year of selectedYears" 
+                class="vigencia-cell">
+              {{ rowData['vigencia_' + year] | numberFormat }}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr class="total-row">
+            <td class="concept-cell"><strong>Total General</strong></td>
+            <td *ngFor="let year of selectedYears" 
+                class="vigencia-cell">
+              <strong>{{ getTreeTableYearTotal(year) | numberFormat }}</strong>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treetable>
+            
+      <!-- Buttons grid -->
+      <div class="buttons-grid">
+        
+        <button pButton type="button" 
+                icon="pi pi-file-excel" 
+                label="Exportar Excel" 
+                class="p-button-primary"
+                (click)="exportToExcel()">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección E: Gráficas de barras -->
+  <div class="bar-charts-section">
+    <div class="chart-container">
+      <p-card>
+        <ng-template pTemplate="header">
+          <h2 class="chart-title">Evolución SGP - Precios corrientes</h2>          
+        </ng-template>
+        <p-chart type="bar" [data]="chartData1" [options]="mixedChartOptions" style="width: 100%;"></p-chart>
+      </p-card>
+    </div>
+    <div class="chart-container">
+      <p-card>
+        <ng-template pTemplate="header">
+          <h2 class="chart-title">Evolución SGP – Precios constantes 2025</h2>          
+        </ng-template>
+        <p-chart type="bar" [data]="chartData3" [options]="barChartOptions" style="width: 100%;"></p-chart>
+      </p-card>
+    </div>
+    
+  </div>
+
+  <!-- Notas -->
+  <div class="table-notes">
+    <h4>NOTAS</h4>
+    <p>(1) Los datos que se presentan para los años 2002-2015, corresponden a las distribuciones efectuadas mediante Documentos CONPES de su respectiva vigencia; para los años 2015 en adelante, corresponden a las distribuciones efectuadas mediante Documentos de Distribución de su respectiva vigencia.</p>   
+  </div>
+</div>

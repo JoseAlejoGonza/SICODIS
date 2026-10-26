@@ -1,0 +1,540 @@
+<div class="container">
+  <!-- Header section-->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Tablero comparativo Sistema General de Participaciones</h1>
+      <p>
+        Consulte para una o dos entidades territoriales, los recursos distribuidos del SGP en la vigencia 
+        seleccionada frente a la vigencia anterior.
+      </p>
+    </div>
+  </div>
+
+  <div class="dates-buttons-container">
+    <div style="width: 84%;">
+      <p class="date-update">Fecha de consulta: {{ fechaActual }}</p>
+      <p class="date-update">Cifras en pesos corrientes</p>
+    </div>
+  </div>
+
+  <!-- Main tabs -->
+  <div class="main-tabs" role="tablist" aria-label="Secciones del tablero comparativo">
+    <button type="button" role="tab" class="main-tab"
+            [class.active]="activeTab === 'recursos'"
+            [attr.aria-selected]="activeTab === 'recursos'"
+            (click)="setActiveTab('recursos')">
+      Recursos
+    </button>
+    <button type="button" role="tab" class="main-tab"
+            [class.active]="activeTab === 'variables'"
+            [attr.aria-selected]="activeTab === 'variables'"
+            (click)="setActiveTab('variables')">
+      Variables Comparadas
+    </button>
+  </div>
+
+    <!-- Filters section -->
+  <div class="filters-section">
+    <div class="filters-panel">
+      <div class="filters-row">
+        <!-- Vigencia a consultar (multi-select) -->
+        <!-- <div class="p-field vigencia-select">
+          <p-floatlabel class="w-full" variant="on">
+            <p-select 
+              id="vigencia" 
+              [options]="infoResume" 
+              inputId="vigenciaSelect" 
+              [(ngModel)]="selected"
+              (onChange)="onVigenciaChange($event)"
+              optionValue="id_vigencia"
+              optionLabel="vigencia" 
+              placeholder="Seleccionar vigencia"
+              styleClass="vigencia-select-custom">
+            </p-select>
+            <label for="vigenciaSelect">Vigencia</label>
+          </p-floatlabel>
+        </div> -->
+
+        <div class="p-field vigencia-select">
+          <p-floatlabel class="w-full" variant="on">
+            <p-select 
+              id="vigencia" 
+              [options]="infoResume" 
+              inputId="vigenciaSelect" 
+              [(ngModel)]="selected"
+              (onChange)="onVigenciaChange($event)"
+              optionValue="id_vigencia"
+              optionLabel="vigencia" 
+              placeholder="Seleccionar vigencia"
+              styleClass="vigencia-select-custom">
+            </p-select>
+            <label for="vigenciaSelect">Vigencia</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Departamento -->
+        <div class="p-field department-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="departamento" 
+              [options]="departments" 
+              inputId="departamentoSelect"
+              [(ngModel)]="departmentSelected"
+              (onChange)="onDepartmentChange($event)"
+              optionValue="id"
+              optionLabel="label"
+              placeholder="Departamento">
+            </p-select>
+            <label for="departamentoSelect">Departamento</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Municipio -->
+        <div class="p-field town-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="municipio" 
+              [options]="towns" 
+              inputId="municipioSelect"
+              [(ngModel)]="townSelected"
+              
+              optionValue="id"
+              optionLabel="label"
+              placeholder="Municipio"
+              [disabled]="!departmentSelected">
+            </p-select>
+            <label for="municipioSelect">Municipio</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Departamento 2 -->
+        <div class="p-field department-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="departamento2" 
+              [options]="departments" 
+              inputId="departamentoSelect2"
+              [(ngModel)]="departmentSelected2"
+              (onChange)="onDepartment2Change($event)"
+              optionValue="id"
+              optionLabel="label" 
+              placeholder="Departamento 2">
+            </p-select>
+            <label for="departamentoSelect2">Departamento 2</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Municipio 2 -->
+        <div class="p-field town-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="municipio2" 
+              [options]="towns2" 
+              inputId="municipioSelect2"
+              [(ngModel)]="townSelected2"
+              
+              optionValue="id"
+              optionLabel="label" 
+              placeholder="Municipio 2"
+              [disabled]="!departmentSelected2">
+            </p-select>
+            <label for="municipioSelect2">Municipio 2</label>
+          </p-floatlabel>
+        </div>
+        <button pButton type="button" 
+              icon="pi pi-filter" 
+              label="Aplicar" 
+              class="p-button-primary"
+              (click)="applyFilters()">
+        </button>
+        <button pButton type="button" 
+                icon="pi pi-eraser" 
+                label="Limpiar" 
+                class="p-button-secondary"
+                (click)="clearFilters()">
+        </button>
+      </div>
+    </div>    
+  </div>
+
+  <!-- Informative message when no municipalities are selected -->
+  <div class="info-message-section" *ngIf="activeTab === 'recursos' ? (!townSelected || !townSelected2) : !townSelected">
+    <p-card class="info-card">
+      <div class="info-content" style="text-align: center; padding: 2rem;">
+        <i class="pi pi-info-circle" style="font-size: 3rem; color: #2196F3; margin-bottom: 1rem;"></i>
+        <h3>Seleccione las entidades territoriales a comparar</h3>
+        <p>Para visualizar la comparativa entre municipios, por favor seleccione:</p>
+        <ul style="text-align: left; margin: 1rem 0; display: inline-block;">
+          <li>Una vigencia</li>
+          <li>Los departamentos de los municipios</li>
+          <li>Los dos municipios que desea comparar</li>
+        </ul>
+        <p><strong>Nota:</strong> Los gráficos y tablas comparativas se mostrarán una vez realice las selecciones.</p>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Loading indicator while fetching comparative data -->
+  <div class="loading-section" *ngIf="activeTab === 'recursos' && isLoadingComparativeData && townSelected && townSelected2">
+    <p-card class="loading-card">
+      <div class="loading-content" style="text-align: center; padding: 3rem;">
+        <p-progress-spinner 
+          styleClass="w-4rem h-4rem" 
+          strokeWidth="4" 
+          fill="#ddd" 
+          animationDuration=".5s">
+        </p-progress-spinner>
+        <h3 style="margin-top: 1.5rem; color: #666;">Cargando datos comparativos</h3>
+        <p>Consultando información de los municipios seleccionados...</p>
+        <div class="loading-details" style="margin-top: 1rem; font-size: 0.9rem; color: #888;">
+          <p>• {{ getSelectedMunicipalityName(1) }}</p>
+          <p>• {{ getSelectedMunicipalityName(2) }}</p>
+          <p>• Vigencia {{ getSelectedVigenciaName() }}</p>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Recursos tab content -->
+  <div class="tab-content recursos-tab" *ngIf="fichaComparativaData.length > 0 && !isLoadingComparativeData && activeTab === 'recursos'">
+    <!-- Chart section -->
+    <div class="graphics-section">
+    <div class="dual-chart-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
+      <!-- First Chart - Municipality 1 -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">Distribución por conceptos principales</h3>
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(1) }}</h3>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 400px; width: 100%;">
+            <canvas id="barChart" style="max-width: 100%; max-height: 100%;"></canvas>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Second Chart - Municipality 2 -->
+      <div class="chart-column">
+        <p-card class="chart-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="chart-title">Distribución por conceptos principales</h3>
+              <h3 class="chart-title">{{ getSelectedMunicipalityName(2) }}</h3>
+            </div>
+          </ng-template>
+          <div class="chart-container" style="position: relative; height: 400px; width: 100%;">
+            <canvas id="barChart2" style="max-width: 100%; max-height: 100%;"></canvas>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+
+    <!-- Data table section -->
+    <div class="table-section">
+    <div class="dual-table-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
+      <!-- First Municipality Table -->
+      <div class="table-column">
+        <p-card class="table-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="table-title">{{ getSelectedMunicipalityName(1) }}</h3>              
+            </div>
+          </ng-template>
+          <p-treetable #treeTable
+                       [value]="treeTableData" 
+                       dataKey="key" 
+                       [scrollable]="true"
+                       [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
+                       [styleClass]="'sgp-treetable'"
+                       [tableStyle]="{'min-width':'15rem'}"
+                       *ngIf="treeTableData.length > 0">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="table-header concept-header" style="width: 28%;">Participación</th>
+                <th class="table-header vigencia-header" style="width: 20%; text-align: right;">
+                  {{ getSelectedVigenciaName() }}
+                </th>
+                <th class="table-header periodo-anterior-header" style="width: 20%; text-align: right;">
+                  {{ getPreviousVigenciaName() }}
+                </th>
+                <th class="table-header variation-pesos-header" style="width: 20%; text-align: right;">
+                  Variación ($)
+                </th>
+                <th class="table-header variation-percent-header" style="width: 12%; text-align: right;">
+                  Variación (%)
+                </th>                
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+              <tr>
+                <td class="concept-cell" style="width: 32%;">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <strong>{{ rowData.concepto }}</strong>
+                </td>
+                <td class="vigencia-cell" style="width: 20%;">
+                  {{ rowData.vigencia | numberFormat }}
+                </td>
+                <td class="periodo-anterior-cell" style="width: 20%;">
+                  {{ rowData.periodo_anterior | numberFormat }}
+                </td>
+                <td class="variation-pesos-cell" style="width: 20%;">
+                  {{ rowData.diferencia | numberFormat }}
+                </td>
+                <td class="variation-percent-cell" style="width: 8%;">
+                  {{ formatPercentage(rowData.porcentual) }}
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <tr class="total-row">
+                <td class="concept-cell" style="width: 28%;"><strong>Total General</strong></td>
+                <td class="vigencia-cell" style="width: 20%;">
+                  <strong>{{ getTreeTableYearTotal() | numberFormat }}</strong>
+                </td>
+                <td class="vigencia-cell" style="width: 20%;">
+                  <strong>{{ getTreeTablePeriodoAnteriorTotal() | numberFormat }}</strong>
+                </td>
+                <td class="variation-pesos-cell" style="width: 20%;">
+                  <strong>{{ getTreeTableDifferenciaTotal() | numberFormat }}</strong>
+                </td>
+                <td class="variation-percent-cell" style="width: 9%;">
+                  <strong>{{ getTreeTablePorcentualTotal() === '-' ? '-' : getTreeTablePorcentualTotal() + '%' }}</strong>
+                </td>
+              </tr>
+            </ng-template>
+          </p-treetable>
+          
+          <!-- Export button for first table -->
+          <!-- <div class="table-buttons" *ngIf="treeTableData.length > 0">
+            <button pButton type="button" 
+                    icon="pi pi-file-excel" 
+                    label="Exportar Excel" 
+                    class="p-button-primary p-button-sm"
+                    (click)="exportToExcel()">
+            </button>
+          </div> -->
+        </p-card>
+      </div>
+
+      <!-- Second Municipality Table -->
+      <div class="table-column">
+        <p-card class="table-card">
+          <ng-template pTemplate="header">
+            <div style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center;">
+              <h3 class="table-title">{{ getSelectedMunicipalityName(2) }}</h3>              
+            </div>
+          </ng-template>
+          <p-treetable #treeTable2
+                       [value]="treeTableData2" 
+                       dataKey="key" 
+                       [scrollable]="true"
+                       [scrollHeight]="treeTableData2 && treeTableData2.length > 5 ? '400px' : 'auto'"
+                       [styleClass]="'sgp-treetable'"
+                       [tableStyle]="{'min-width':'15rem'}"
+                       *ngIf="treeTableData2.length > 0">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="table-header concept-header" style="width: 28%;">Participación</th>
+                <th class="table-header vigencia-header" style="width: 20%; text-align: right;">
+                  {{ getSelectedVigenciaName() }}
+                </th>
+                <th class="table-header periodo-anterior-header" style="width: 20%; text-align: right;">
+                  {{ getPreviousVigenciaName() }}
+                </th>
+                <th class="table-header variation-pesos-header" style="width: 20%; text-align: right;">
+                  Variación ($)
+                </th>
+                <th class="table-header variation-percent-header" style="width: 12%; text-align: right;">
+                  Variación (%)
+                </th>                
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+              <tr>
+                <td class="concept-cell" style="width: 32%;">
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <strong>{{ rowData.concepto }}</strong>
+                </td>
+                <td class="vigencia-cell" style="width: 20%;">
+                  {{ rowData.vigencia | numberFormat }}
+                </td>
+                <td class="periodo-anterior-cell" style="width: 20%;">
+                  {{ rowData.periodo_anterior | numberFormat }}
+                </td>
+                <td class="variation-pesos-cell" style="width: 20%;">
+                  {{ rowData.diferencia | numberFormat }}
+                </td>
+                <td class="variation-percent-cell" style="width: 8%;">
+                  {{ formatPercentage(rowData.porcentual) }}
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <tr class="total-row">
+                <td class="concept-cell" style="width: 28%;"><strong>Total General</strong></td>
+                <td class="vigencia-cell" style="width: 20%;">
+                  <strong>{{ getTreeTableYearTotal2() | numberFormat }}</strong>
+                </td>
+                <td class="vigencia-cell" style="width: 20%;">
+                  <strong>{{ getTreeTablePeriodoAnteriorTotal2() | numberFormat }}</strong>
+                </td>
+                <td class="variation-pesos-cell" style="width: 20%;">
+                  <strong>{{ getTreeTableDifferenciaTotal2() | numberFormat }}</strong>
+                </td>
+                <td class="variation-percent-cell" style="width: 9%;">
+                  <strong>{{ getTreeTablePorcentualTotal2() === '-' ? '-' : getTreeTablePorcentualTotal2() + '%' }}</strong>
+                </td>
+              </tr>
+            </ng-template>
+          </p-treetable>
+          
+          <!-- Export button for second table -->
+          <!-- <div class="table-buttons" *ngIf="treeTableData2.length > 0">
+            <button pButton type="button" 
+                    icon="pi pi-file-excel" 
+                    label="Exportar Excel" 
+                    class="p-button-primary p-button-sm"
+                    (click)="exportToExcel2()">
+            </button>
+          </div> -->
+        </p-card>
+      </div>
+    </div>
+
+      <!-- Download button for the comparative ficha -->
+      <div class="download-button-container" *ngIf="treeTableData.length > 0 && treeTableData2.length > 0">
+        <button
+          pButton
+          type="button"
+          label="Descargar ficha comparativa"
+          icon="pi pi-file-excel"
+          [loading]="isDownloadingFichaComparativa"
+          class="p-button p-button-primary download-button"
+          (click)="descargarFichaComparativa()">
+        </button>
+      </div>
+
+      <!-- Shared Notes -->
+      <div class="shared-table-notes">
+        <h4>NOTAS</h4>
+        <p class="final-note" *ngIf="this.selected == 13">
+          <strong>(1)</strong> Los recursos pendientes por distribuir corresponden a una parte de las doce doceavas de la participación para educación ($ 18.644 miles de millones) y las once doceavas de la asignación especial para el FONPET ($ 2.731 miles de millones)
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Variables Comparadas tab content -->
+  <div class="tab-content variables-tab" *ngIf="activeTab === 'variables' && townSelected">
+    <!-- Sub-tabs -->
+    <div class="variables-subtabs" role="tablist" aria-label="Variables por participación">
+      <button type="button" role="tab" class="variables-subtab"
+              *ngFor="let seccion of seccionesVariables"
+              [class.active]="activeSeccion === seccion.id"
+              [attr.aria-selected]="activeSeccion === seccion.id"
+              (click)="setActiveSeccion(seccion.id)">
+        {{ seccion.label }}
+      </button>
+    </div>
+
+    <div class="variables-card">
+      <div class="variables-card-header">
+        <span class="variables-icon" aria-hidden="true"
+              [style.--variables-icon]="'url(' + seccionActiva.icono + ')'"></span>
+        <h3 class="variables-card-title">{{ seccionActiva.titulo }}</h3>
+        <button type="button" class="variables-collapse"
+                [attr.aria-expanded]="!seccionColapsada"
+                [attr.aria-label]="seccionColapsada ? 'Expandir sección' : 'Contraer sección'"
+                (click)="seccionColapsada = !seccionColapsada">
+          <i class="pi" [ngClass]="seccionColapsada ? 'pi-chevron-down' : 'pi-chevron-up'"></i>
+        </button>
+      </div>
+
+      <ng-container *ngIf="!seccionColapsada">
+        <!-- Loading -->
+        <div class="variables-state" *ngIf="isLoadingVariables">
+          <p-progress-spinner styleClass="w-3rem h-3rem" strokeWidth="4" animationDuration=".5s"></p-progress-spinner>
+          <p>Consultando variables de las entidades seleccionadas...</p>
+        </div>
+
+        <!-- Section without data yet -->
+        <div class="variables-state" *ngIf="!isLoadingVariables && seccionActiva.enDepuracion">
+          <i class="pi pi-clock" aria-hidden="true"></i>
+          <p><strong>Información en proceso de depuración.</strong></p>
+          <p>Las variables de esta participación estarán disponibles próximamente.</p>
+        </div>
+
+        <!-- Not applied yet -->
+        <div class="variables-state" *ngIf="!isLoadingVariables && !seccionActiva.enDepuracion && entidadesVariables.length === 0">
+          <i class="pi pi-filter" aria-hidden="true"></i>
+          <p>Seleccione las entidades y presione <strong>Aplicar</strong> para consultar las variables.</p>
+        </div>
+
+        <ng-container *ngIf="!isLoadingVariables && !seccionActiva.enDepuracion && entidadesVariables.length > 0">
+          <div class="variables-grid" [class.single]="entidadesVariables.length === 1">
+            <div class="variables-column" *ngFor="let entidad of entidadesVariables; let i = index"
+                 [ngClass]="i === 0 ? 'entidad-1' : 'entidad-2'">
+              <div class="entidad-header">
+                <i class="pi pi-map-marker" aria-hidden="true"></i>
+                <span class="entidad-nombre">{{ entidad.nombre }}</span>
+                <span class="entidad-badge">Entidad {{ i + 1 }}</span>
+              </div>
+
+              <div class="variables-table-wrapper">
+                <table class="variables-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Variable</th>
+                      <th scope="col" class="num">{{ variablesAnio ? variablesAnio - 1 : '' }}</th>
+                      <th scope="col" class="num">{{ variablesAnio }}</th>
+                      <th scope="col" class="num">Var.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let variable of entidad.secciones[activeSeccion]">
+                      <td class="variable-nombre">
+                        {{ variable.nombre }}<sup *ngIf="variable.preliminar" class="preliminar-mark" title="Dato preliminar">*</sup>
+                      </td>
+                      <td class="num">{{ formatearValorVariable(variable.anterior, variable.formato) }}</td>
+                      <td class="num">{{ formatearValorVariable(variable.actual, variable.formato) }}</td>
+                      <td class="num">
+                        <span class="variacion" [ngClass]="getTendencia(variable.variacion)">
+                          <ng-container [ngSwitch]="getTendencia(variable.variacion)">
+                            <span *ngSwitchCase="'sube'" aria-label="Aumento">▲</span>
+                            <span *ngSwitchCase="'baja'" aria-label="Disminución">▼</span>
+                            <span *ngSwitchDefault aria-hidden="true">—</span>
+                          </ng-container>
+                          {{ formatearVariacion(variable.variacion) }}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="variables-legend">
+            <div class="legend-group">
+              <span class="legend-item"><span class="dot entidad-1"></span>Entidad 1</span>
+              <span class="legend-item" *ngIf="entidadesVariables.length > 1"><span class="dot entidad-2"></span>Entidad 2</span>
+            </div>
+            <div class="legend-group">
+              <span class="legend-item sube">▲ Aumento</span>
+              <span class="legend-item baja">▼ Disminución</span>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+
+    <div class="shared-table-notes variables-notes" *ngIf="!seccionActiva.enDepuracion && seccionTienePreliminares">
+      <h4>NOTAS</h4>
+      <p>(*) Dato preliminar en proceso de depuración. Las variables y cifras definitivas se publicarán una vez concluya la revisión de la información.</p>
+    </div>
+  </div>
+</div>

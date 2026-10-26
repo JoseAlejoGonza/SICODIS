@@ -1,0 +1,371 @@
+<div class="reporte-funcionamiento-container">
+
+  <app-infografia-popup sistema="funcionamiento"></app-infografia-popup>
+
+  <!-- <app-info-popup [infoText]="infoPopupContent" contentTitle="Información Detallada del Reporte"></app-info-popup> -->
+  
+  <!-- Popups para Diccionario y Siglas -->
+  <app-info-popup 
+    [infoText]="diccionarioContent" 
+    contentTitle="Diccionario de Conceptos"
+    [showPopup]="showDiccionarioPopup"
+    (onClose)="closeDiccionarioPopup()">
+  </app-info-popup>
+  
+  <app-info-popup 
+    [infoText]="siglasContent" 
+    contentTitle="Siglas y Abreviaciones"
+    [showPopup]="showSiglasPopup"
+    (onClose)="closeSiglasPopup()">
+  </app-info-popup> 
+
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Administración y Sistema de Seguimiento (SSEC)</h1>
+        <p>Consulte información completa sobre la distribución, ejecución, recaudo y saldos indicativos de cada una de las entidades beneficiarias de recursos de funcionamiento, fiscalización y el Sistema de Seguimiento Evaluación y Control del SGR.
+ 	 	 	 	</p>
+    </div>
+  </div>
+
+  <!-- Panel superior con selects -->
+  <div class="filters-panel">
+    <div class="filters-row">
+      <div class="p-field vigencia-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+           <p-select 
+            id="vigencia" 
+            [options]="vigencias" 
+            inputId="vigenciaSelect" 
+            [(ngModel)]="selectedVigencia"
+            (onChange)="onVigenciaChange($event)"
+            optionLabel="label" 
+            placeholder="Bienio" >
+          </p-select>
+          <label for="vigenciaSelect">Bienio</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field asignaciones-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-multiselect id="asignaciones" [options]="fuentes" inputId="asignacioneSelect" [(ngModel)]="selectedFuente"
+            (onChange)="onFuenteChange($event)" optionLabel="label" [maxSelectedLabels]="3">
+          </p-multiselect>
+          <label for="asignacioneSelect">Asignaciones</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field conceptos-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-multiselect id="conceptos" [options]="conceptos" inputId="conceptosSelect" [(ngModel)]="selectedConcepto"
+            (onChange)="onConceptoChange($event)" optionLabel="label" 
+            [maxSelectedLabels]="3"></p-multiselect>
+          <label for="conceptosSelect">Conceptos</label>
+        </p-floatlabel>
+
+      </div>
+
+      <div class="p-field beneficiarios-select">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-multiselect id="beneficiarios" [options]="beneficiarios" inputId="beneficiariosSelect"
+            [(ngModel)]="selectedBeneficiario" optionLabel="label" (onChange)="onBeneficiarioChange($event)" 
+            [maxSelectedLabels]="3"></p-multiselect>
+          <label for="beneficiariosSelect">Beneficiario</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field dpto-select" *ngIf="showDptos">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="departamento" [options]="departamentos" inputId="departamentoSelect"
+            [(ngModel)]="selectedDepartamento" optionLabel="label" (onChange)="onDepartamentoChange($event)" 
+          ></p-select>
+          <label for="departamentoSelect">Departamento</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field entidades-cr-select" *ngIf="showEntidadesCR">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-select id="entidad-cr" [options]="funcionamientoDataEntitiesCR" inputId="entidadCrSelect"
+            [(ngModel)]="selectedEntidadCR" optionLabel="nombre_entidad" (onChange)="onEntidadCRChange($event)">
+          </p-select>
+          <label for="entidadCrSelect">Entidad</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field mpio-select" *ngIf="showMpios">
+        <p-floatlabel class="w-full md:w-56" variant="on">
+          <p-multiselect id="municipio" [options]="municipios" inputId="municipioSelect"
+            [(ngModel)]="selectedMunicipio" optionLabel="label" (onChange)="onMunicipioChange($event)"
+            [selectionLimit]="3" [maxSelectedLabels]="3"
+            emptyMessage="Sin municipios">
+          </p-multiselect>
+          <label for="municipioSelect">Municipio (hasta 3)</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="p-field clear-filters">
+        <button pButton type="button" icon="pi pi-eraser" label="Limpiar filtros" class="p-button-secondary"
+          (click)="clearFilters()">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje cuando no hay datos seleccionados -->
+  <div *ngIf="!registroActual" class="no-data-message">
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="no-data-content">
+          <mat-icon class="no-data-icon">info</mat-icon>
+          <h3>Seleccione los filtros para ver la información</h3>
+          <p>Para visualizar los datos de funcionamiento, complete la selección de Fuente, Concepto y Beneficiario en el
+            panel superior.</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="dates-buttons-container">
+    <div style="width: 84%;">
+      <p class="date-update">Fecha de actualización: {{ fechaActualizacion }}</p>
+      <p class="date-update">Fecha de corte de recaudo: {{ fechaCorteRecaudo }}</p> 
+      <p class="date-update">Cifras en pesos corrientes</p>     
+    </div>
+    <div style="position: relative; padding-bottom: .25rem;">
+      <button pButton type="button" label="Diccionario" class="p-button-primary" style="margin-right: 1.7rem; width: 90px;"
+          (click)="showPopupDiccionario()">
+      </button>
+      <button pButton type="button" label="Siglas" class="p-button-primary" style="width: 90px;"
+          (click)="showPopupSiglas()">
+      </button>
+    </div> 
+  </div>
+
+  <!-- Panel principal con dos columnas -->
+  <div class="main-panel" *ngIf="registroActual">
+    <!-- Columna izquierda (60%) - Tarjetas -->
+    <div class="left-column">
+      <!-- Loading overlay for left column -->
+      <div class="loading-overlay" *ngIf="isLoadingData">
+        <p-progressSpinner strokeWidth="3" fill="transparent" animationDuration=".5s"></p-progressSpinner>
+      </div>
+      
+      <!-- Tarjeta 1: Presupuesto -->
+      <mat-card class="info-card" [class.loading]="isLoadingData">
+        <mat-card-header>
+          <mat-card-title class="card-title card-main">Presupuesto</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metrics-row">
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions2(presupuestoData.presupuestoAsignado)}}</div>
+              <div class="metric-label">Presupuesto Asignado</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions2(presupuestoData.disponibilidadInicial)}}</div>
+              <div class="metric-label">Disponibilidad Inicial</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions2(presupuestoData.recursosBloquedos)}}</div>
+              <div class="metric-label">Recursos Bloqueados</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions2(presupuestoData.presupuestoVigenteDisponible)}}</div>
+              <div class="metric-label">Presupuesto Disponible</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Tarjeta 2: Ejecución Presupuestal -->
+      <mat-card class="info-card" [class.loading]="isLoadingData" *ngIf="!ocultarEjecucionYAfectacion">
+        <mat-card-header>
+          <mat-card-title class="card-title card-main">Ejecución Presupuestal</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metrics-row">
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions2(ejecucionData.cdp)}}</div>
+              <div class="metric-label">CDP</div>
+            </div>
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'compromiso'">
+              <div class="metric-value">{{formatMillions2(ejecucionData.compromiso)}}</div>
+              <div class="metric-label">Compromiso</div>
+            </div>
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'pagos'">
+              <div class="metric-value">{{formatMillions2(ejecucionData.pagos)}}</div>
+              <div class="metric-label">Pagos</div>
+            </div>
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'saldo_por_comprometer'">
+              <div class="metric-value">{{formatMillions2(ejecucionData.saldo_por_comprometer)}}</div>
+              <div class="metric-label">Saldo por comprometer</div>
+            </div>
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'saldo_sin_afectacion'">
+              <div class="metric-value">{{formatMillions2(ejecucionData.saldo_sin_afectacion)}}</div>
+              <div class="metric-label">Saldo sin afectación</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Tarjeta 3: Situación de Caja -->
+      <mat-card class="info-card" [class.loading]="isLoadingData" *ngIf="!ocultarCajaYRecaudo">
+        <mat-card-header>
+          <mat-card-title class="card-title card-main">Situación de Caja</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metrics-row">
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions2(situacionCajaData.disponibilidadInicial)}}</div>
+              <div class="metric-label">Disponibilidad inicial</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-value">{{formatMillions2(situacionCajaData.recaudo)}}</div>
+              <div class="metric-label">Recaudo Total</div>
+            </div>
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'caja_total'">
+              <div class="metric-value">{{formatMillions2(situacionCajaData.cajaTotal)}}</div>
+              <div class="metric-label">Caja Total</div>
+            </div>
+            <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'caja_disponible'">
+              <div class="metric-value">{{formatMillions2(situacionCajaData.cajaDisponible)}}</div>
+              <div class="metric-label">Caja Disponible</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Tarjeta 4: Avance de Recaudo -->
+      <div style="display: flex;gap: 0.25rem" *ngIf="!ocultarCajaYRecaudo">
+        <mat-card class="info-card info-card-recaudo" [class.loading]="isLoadingData">
+          <mat-card-header class="card-header-avance-recaudo">
+            <mat-card-title class="card-title card-main">Avance del recaudo de ingresos corrientes</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="metrics-row metrics-row-recaudo">
+              <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'presupuesto_corriente'">
+                <div class="metric-value">{{formatMillions2(avanceRecaudoData.presupuestoCorriente)}}</div>
+                <div class="metric-label">Presupuesto corriente</div>
+              </div>
+              <div class="metric-item" [class.highlighted-metric]="highlightedMetric === 'iac_corriente'">
+                <div class="metric-value">{{formatMillions2(avanceRecaudoData.iacCorriente)}}</div>
+                <div class="metric-label">Recaudo corriente</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-value avance">
+                  {{avanceRecaudoData.avance | percentFormat:2}}
+                </div>
+                <div class="metric-label">Avance</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>        
+      </div>
+    </div>
+
+    <!-- Columna derecha (40%) - Gráficos -->
+    <div class="right-column">
+      <!-- Loading overlay for right column -->
+      <div class="loading-overlay" *ngIf="isLoadingData">
+        <p-progressSpinner strokeWidth="3" fill="transparent" animationDuration=".5s"></p-progressSpinner>
+      </div>
+      
+      <!-- Gráfico 1: Donut Avance Ejecución-->
+      <div class="chart-container" [class.loading]="isLoadingData">        
+        <p-chart type="doughnut" [data]="donutAvanceEjecucionData" [options]="donutAvanceEjecucionOptions" class="chart"></p-chart>
+      </div>
+
+      <!-- Gráfico 2: Barra horizontal (Afectación Presupuestal) -->
+      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData" *ngIf="!ocultarEjecucionYAfectacion">
+        <p-chart type="bar" [data]="horizontalBarAfectacionData" [options]="horizontalBarAfectacionOptions" class="chart horizontal-bar-chart">
+        </p-chart>
+      </div>
+
+      <!-- Gráfico 3: Barra horizontal (Situación de Caja) -->
+      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData" *ngIf="!ocultarCajaYRecaudo">
+        <p-chart type="bar" [data]="hBarSituacionCajaData" [options]="hBarSituacionCajaOpts" class="chart horizontal-bar-chart"></p-chart>
+      </div>
+      <!-- Gráfico 4: Barras Horizontales Avance de Recaudo -->
+      <div class="chart-container horizontal-bar-container" [class.loading]="isLoadingData" *ngIf="!ocultarCajaYRecaudo">
+        <p-chart type="bar" [data]="hBarAvanceRecaudoData" [options]="hBarAvanceRecaudoOptions" class="chart horizontal-bar-chart"></p-chart>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="final-notes-container">
+    <p class="final-note" style="padding-bottom: 1em; font-size: 0.65rem;">
+      <strong>Fuente:</strong> DNP - DPIP - SDRT a partir de la ley bienal de presupuesto, decretos, resoluciones de distribución (Comisión Rectora del SGR y Ministerio de Minas y Energía) y los reportes de información del  Sistema de Presupuesto y Giro de Regalías (SPGR).
+    </p>
+  </div>
+  
+
+  <!-- Botones de acción -->
+  <div class="action-buttons" *ngIf="registroActual">
+    <p-button label="Detalle Gestión Financiera" icon="pi pi-chart-line" class="detail-button"
+      (click)="onDetalleGestionClick()">
+    </p-button>
+    <p-button label="Detalle de Recaudo" icon="pi pi-money-bill" class="detail-button"
+      (click)="onDetalleRecaudoClick()">
+    </p-button>
+    <div>
+      <p-splitButton label="Informe Trimestral de Gestión Financiera"
+                        class="p-button-primary"                        
+                        [model]="menuItems">
+                    </p-splitButton>    
+    </div>    
+  </div>
+
+  <!-- Información adicional del registro seleccionado -->
+  <div class="registro-detalle" *ngIf="showDetailInfo && selectedBeneficiario.length > 0">
+    <mat-card class="info-card" style="height: auto;">
+      <mat-card-header>
+        <mat-card-title class="card-title card-main">Detalle del Registro Seleccionado</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div style="display: table-row;width: 100%;;">
+          <div class="registro-item" *ngFor="let registro of (selectedBeneficiario.length > 0 ? distribucionTotalMultiple : distribucionTotal); let i = index">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <strong>Asignación:</strong> {{registro.fuente_principal || 'N/A'}}
+              </div>
+              <div class="detail-item">
+                <strong>Beneficiario:</strong> {{registro.beneficiario_seleccionado || registro.beneficiario || selectedBeneficiario[0]?.label || 'N/A'}}
+              </div>
+              <div class="detail-item">
+                <strong>Presupuesto disponible:</strong>
+                <div class="detail-item-value-numeric">
+                  {{formatMillions2(registro.apropiacion_vigente_disponible, {}) || 'N/A'}}
+                </div>
+              </div>
+              <div class="detail-item">
+                <strong>Compromisos:</strong>
+                <div class="detail-item-value-numeric">
+                  {{formatMillions2(registro.compromisos, {}) || 'N/A'}}
+                </div>
+              </div>
+              <div class="detail-item">
+                <strong>Saldo por comprometer:</strong>
+                <div class="detail-item-value-numeric">
+                  {{formatMillions2(registro.saldo_por_comprometer, {}) || 'N/A'}}
+                </div>
+              </div>
+              <div class="detail-item">
+                <strong>Avance de ejecución:</strong>
+                <div class="detail-item-value-numeric">
+                  {{(registro.compromisos / registro.apropiacion_vigente_disponible)  | percentFormat:2 }}
+                </div>
+              </div>
+            </div>
+            <!-- Gráfico de comparación por registro -->
+            <div class="detail-chart-container detail-chart-aligned" *ngIf="detailChartData && detailChartData[i]">
+              <p-chart type="bar" [data]="detailChartData[i]" [options]="detailChartOptions" class="detail-chart"></p-chart>
+            </div>
+          </div>
+        </div>
+
+      </mat-card-content>
+    
+    </mat-card>
+  </div>  
+</div>

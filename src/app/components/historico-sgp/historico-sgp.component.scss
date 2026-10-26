@@ -1,0 +1,709 @@
+// Estilos del componente historico-sgp con PrimeNG
+:host ::ng-deep {
+  // Estilos para los componentes de PrimeNG
+  .p-select-label {
+    padding: .425rem !important;
+    font-size: 0.875rem;
+  }
+
+  .p-button {
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  // Estilos para la tabla de PrimeNG
+  .p-datatable,
+  .p-treetable {
+    font-size: 0.8rem;
+    
+    .p-datatable-header {
+      background: var(--p-surface-50);
+      border: 1px solid var(--p-content-border-color);
+      padding: 0.5rem;
+    }
+
+    .p-datatable-thead > tr > th,
+    .p-treetable-thead > tr > th {
+      background: var(--p-surface-100);
+      color: var(--p-text-color);
+      font-weight: 600;
+      border-bottom: 2px solid var(--p-primary-color);
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.8rem;
+    }
+
+    .p-datatable-tbody > tr > td,
+    .p-treetable-tbody > tr > td {
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.8rem;
+      vertical-align: middle;
+    }
+
+    .p-datatable-tbody > tr,
+    .p-treetable-tbody > tr {
+      &:nth-child(even) {
+        background: var(--p-surface-50);
+      }
+
+      &:hover {
+        background: var(--p-highlight-bg);
+        color: var(--p-highlight-text-color);
+      }
+    }
+
+    .total-row {
+      background: var(--p-primary-50) !important;
+      color: var(--p-primary-900) !important;
+      font-weight: 600;
+      
+      td {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.8rem !important;
+        
+        &.vigencia-cell {
+          text-align: right !important;          
+        }
+      }
+      
+      &:hover {
+        background: var(--p-primary-100) !important;
+      }
+    }
+
+    // Hacer la tabla más compacta
+    &.p-datatable-sm {
+      .p-datatable-thead > tr > th {
+        padding: 0.375rem 0.5rem !important;
+      }
+      
+      .p-datatable-tbody > tr > td {
+        padding: 0.375rem 0.5rem !important;
+      }
+    }
+
+    // Estilos para scroll horizontal cuando hay muchas vigencias
+    &.historico-treetable {
+      &.horizontal-scroll {        
+        .p-treetable-scrollable-wrapper {
+          overflow-x: auto;
+        }
+      }
+      
+      &.horizontal-scroll {
+        .p-treetable-thead > tr > th {
+          white-space: nowrap;
+          min-width: 120px;
+          
+          &.concept-header {
+            min-width: 200px;
+            position: sticky;
+            left: 0;
+            background: var(--p-surface-100);
+            z-index: 2;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+          }
+          
+          &.vigencia-header {
+            min-width: 150px;
+            text-align: right;
+          }
+        }
+        
+        .p-treetable-tbody > tr > td {
+          white-space: nowrap;
+          min-width: 120px;
+          
+          &.concept-cell {
+            min-width: 200px;
+            position: sticky;
+            left: 0;
+            background: inherit;
+            z-index: 1;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+          }
+          
+          &.vigencia-cell {
+            min-width: 150px;
+            text-align: right;            
+          }
+        }
+        
+        .total-row {
+          td.concept-cell {
+            background: var(--p-primary-50) !important;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+          }
+          
+          td.vigencia-cell {
+            background: var(--p-primary-50) !important;
+            text-align: right !important;            
+          }
+        }
+      }
+      
+      // Estilos generales para todas las tablas
+      .p-treetable-thead > tr > th {
+        &.vigencia-header {
+          text-align: right;
+        }
+      }
+      
+      .p-treetable-tbody > tr > td {
+        &.vigencia-cell {
+          text-align: right;          
+        }
+      }
+    }
+  }
+
+  .p-multiselect {
+    width: 100% !important;
+    min-width: 140px;
+    height: 42px !important;
+    font-size: 0.875rem !important;
+    
+    .p-multiselect-label {
+      padding: .425rem !important;
+      font-size: 0.875rem !important;
+      line-height: 1.5;
+    }
+    
+    .p-multiselect-item {
+      font-size: 0.875rem !important;
+    }
+    
+    .p-multiselect-token {
+      font-size: 0.875rem !important;
+    }
+  }
+
+  .p-select {
+    width: 100% !important;
+    height: 42px !important;
+  }
+
+  // Estilos para gr�ficos
+  .mat-grid-tile {
+    .mat-grid-tile-content {
+      padding: 0.5rem;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .p-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+  }
+
+  // Estilos espec�ficos para PrimeNG Cards
+  .p-card {
+    width: 100% !important;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .p-card-header {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: .25rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .p-card-body {
+      flex: 1;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .p-card-content {
+      flex: 1;
+      padding: 0;
+    }
+  }
+
+  // Ajustes para los gr�ficos de Chart.js
+  .p-chart {
+    width: 100% !important;
+    height: 100% !important;
+
+    canvas {
+      max-width: 100% !important;
+      max-height: 100% !important;
+    }
+  }
+}
+
+.container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: var(--p-surface-0);
+  min-height: 100vh;
+}
+
+.gradient-banner {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-image: url('/assets/img/sgp/sgp-historico.jpg');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  display: flex;
+  margin-bottom: .5rem;
+  border-radius: 8px;
+
+  .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: linear-gradient(90deg, #f9fbfccc 0%, rgb(53 95 147 / 31%) 100%);   
+  }
+        
+  .banner-content {
+    position: relative;
+    margin-top: 1rem;
+    z-index: 2;
+    padding: 1rem;
+    max-width: 80%;    
+        
+    h1 {
+      font-size: 2rem;
+      margin-top: 2.25rem;
+      margin-bottom: 2.5rem;
+      color: #e4e6eb;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+      color: #103d6e;
+    }
+
+    p {
+        font-size: 1.35rem;
+        margin-bottom: 1rem;
+        color: #103d6e;     
+        width: 80%;
+        font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(245, 245, 247, 0.92);
+      }
+  }
+}
+
+// Secciones organizadas verticalmente
+// (Removido main-content-section ya que ahora son secciones independientes)
+
+// Sección de filtros - Primera fila completa
+.filters-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  width: 100%;
+
+  .filters-panel {
+    
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+      justify-content: flex-start;
+
+      .p-field {
+        flex: 0 1 auto;
+        min-width: 200px;
+        max-width: 250px;
+        margin-bottom: 0;
+
+        &.vigencia-select,
+        &.department-select,
+        &.town-select {
+          min-width: 200px;
+          max-width: 250px;
+        }
+
+        .p-floatlabel {
+          width: 100%;
+          
+          &.w-full.md\:w-56 {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          
+          .p-select,
+          .p-multiselect {
+            width: 100% !important;
+          }
+        }
+      }
+    }
+  }
+
+}
+
+// Contenedor de fechas y botones
+.dates-buttons-container {
+  display: flex;
+  width: 100%;
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+  .date-update {
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #0943b5;
+    text-align: left;
+    margin-bottom: 0.125rem;
+  }
+}
+
+
+// Sección de tabla - Segunda fila completa
+.table-section {
+  background: var(--p-surface-card);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  width: 100%;
+
+  .card {
+    .historico-table,
+    .historico-treetable {
+      font-size: 0.8rem;
+      
+      .p-datatable-wrapper,
+      .p-treetable-wrapper {
+        border-radius: 6px;
+        overflow: hidden;
+      }
+    }
+    
+    // Botón de exportar centrado en la tabla
+    .buttons-grid {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+      
+      .p-button {
+        height: 42px;
+        padding: 0 1.5rem;
+        font-size: 0.875rem;
+        min-width: 160px;
+      }
+    }
+  }
+}
+
+// Sección de gr�ficos
+.graphics-section {
+  background: var(--p-surface-card);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  
+  .single-chart-container {
+    width: 100%;
+    max-width: 100%;
+    
+    .p-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+  }
+
+  // Estilos para t�tulos de gr�ficos
+  .chart-title {
+    color: #004583;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    text-align: center;
+  }
+
+  // Estilos para subt�tulos
+  .chart-subtitle {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+    font-style: italic;
+  }
+
+  // Contenedor principal del gr�fico
+  .chart-container {
+    width: 100%;
+    height: 400px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+// Sección de gráficas de barras
+.bar-charts-section {
+  background: var(--p-surface-card);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  
+  .chart-container {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 2rem;
+    
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+
+    p-card{
+      width: 100%;
+    }
+    
+    .p-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+  }
+
+  // Estilos para títulos de gráficos (igual que graphics-section)
+  .chart-title {
+    color: #004583;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    text-align: center;
+  }
+
+  // Estilos para subtítulos (igual que graphics-section)
+  .chart-subtitle {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+    font-style: italic;
+  }
+
+  // Contenedor principal del gráfico
+  .chart-container {
+    width: 100%;
+    height: 400px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Notas finales
+  .final-notes-container {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--p-surface-50);
+    border-radius: 6px;
+    border-left: 4px solid var(--p-primary-color);
+    
+    strong {
+      color: var(--p-primary-color);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    
+    .final-note {
+      margin: 0.25rem 0;
+      font-size: 0.8rem;
+      color: var(--p-text-color);
+      line-height: 1.4;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .filters-section {
+    padding: 1rem;
+    
+    .filters-panel .filters-row {
+      flex-direction: column;
+      
+      .p-field {
+        min-width: 100%;
+        max-width: 100%;
+        
+        &.vigencia-select,
+        &.department-select,
+        &.town-select {
+          min-width: 100%;
+          max-width: 100%;
+        }
+      }
+    }
+  }
+
+  .table-section {
+    padding: 1rem;
+  }
+
+  .graphics-section {
+    .chart-title-small {
+      font-size: 0.9rem;
+    }
+
+    .chart-subtitle-small {
+      font-size: 0.7rem;
+    }
+
+    .chart-container-small {
+      height: 250px;
+      padding: 0.25rem;
+    }
+  }
+
+  .bar-charts-section {
+    padding: 1rem;
+    
+    .chart-container {
+      margin-bottom: 1.5rem;
+      height: 300px;
+    }
+
+    .chart-title {
+      font-size: 1rem;
+    }
+
+    .chart-subtitle {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  .filters-section,
+  .table-section,
+  .graphics-section,
+  .bar-charts-section {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .graphics-section {
+    .chart-title-small {
+      font-size: 0.8rem;
+    }
+
+    .chart-subtitle-small {
+      font-size: 0.65rem;
+    }
+
+    .chart-container-small {
+      height: 200px;
+    }
+  }
+
+  .bar-charts-section {
+    .chart-container {
+      margin-bottom: 1rem;
+      height: 250px;
+    }
+
+    .chart-title {
+      font-size: 0.9rem;
+    }
+
+    .chart-subtitle {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+// Utilidades
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-bold {
+  font-weight: 600;
+}
+
+.p-button{
+  border-radius: 24px;
+}
+// Animaciones
+.p-button,
+.p-select,
+.p-multiselect {
+  transition: all 0.2s ease;
+}
+
+// Estados de carga
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+// Efectos hover para gr�ficos
+.graphics-section {
+  .chart-card {
+    &:hover {
+      .chart-title-small {
+        color: #003366;
+        transition: color 0.2s ease;
+      }
+    }
+  }
+}
+
+// Notas de la tabla
+.table-notes {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--p-surface-50);
+  border-radius: 6px;
+  border-left: 4px solid var(--p-primary-color);
+  
+  h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--p-primary-color);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  p {
+    margin: 0.25rem 0;
+    font-size: 0.8rem;
+    color: var(--p-text-color);
+    line-height: 1.4;
+  }
+}

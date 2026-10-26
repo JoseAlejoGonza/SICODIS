@@ -1,0 +1,16 @@
+<p-dialog 
+  [(visible)]="displayPopup" 
+  [modal]="true" 
+  [dismissableMask]="true" 
+  [closable]="true" 
+  [header]="contentTitle" 
+  [style]="{width: '40vw', maxWidth: '800px', maxHeight: '80vh'}" 
+  [contentStyle]="{maxHeight: '60vh', overflow: 'auto'}"
+  (onHide)="onPopupHide()">
+  
+  <div style="font-size: 11px; line-height: 1.4;" [innerHTML]="infoText"></div>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Cerrar" (click)="closePopup()" styleClass="p-button-text"></p-button>
+  </ng-template>
+</p-dialog>

@@ -1,3 +1,97 @@
-<div class="container">
-    <img class="logo" src="/assets/img/footer-img.svg" alt="gov.co">
-</div>
+<footer class="gov-co-footer">
+  <div class="gov-co-footer-pie footer-venta">
+    <div class="gov-co-footer-venta">
+      <div class="gov-co-footer-venta-imgs-container">
+        <div class="gov-co-logo-pie-blanco-container">
+          <img class="gov-co-logo-pie-blanco" src="https://cdn.www.gov.co/assets/images/logoGovCO.png" alt="Logo de GOV.CO">
+        </div>
+        <div class="gov-co-logo-pie-mesa-container">
+          <img class="gov-co-logo-pie-mesa" src="https://cdn.www.gov.co/v3/assets/images/colombiaco_Mesa de trabajo 1.png" alt="Logo de Colombia CO">
+        </div>
+      </div>
+    </div>
+    <div class="gov-co-presen-venta">
+      <div class="gov-co-info-venta">
+        <h5 class="titulo-venta">Departamento Nacional de Planeación</h5>
+        <div class="row-data">
+          <div class="gov-detalles-venta">
+            <p>Dirección: Calle 26 # 13-19, Piso 1° - Edificio ENTerritorio / Bogotá D.C., Colombia</p>
+            <p>Código Postal: 110311</p>
+            <p>Horario de Atención: Lunes a Viernes 8:00 a.m. a 4:30 p.m.<br>jornada continua</p>
+          </div>
+        </div>
+      </div>
+      <div class="gov-co-social-media-venta">
+        <a class="gov-co-link-venta redes-link" href="https://x.com/DNP_Colombia" target="_blank" title="Red Social X">
+          <div class="redes-icon">
+            <img src="/assets/img/twitter.svg" alt="Icono de X">
+          </div>
+          <div class="redes-texto">&#64;DNP_COLOMBIA</div>
+        </a>
+        <a class="gov-co-link-venta redes-link" href="https://www.instagram.com/dnp_colombia" target="_blank" title="Red Social Instagram">
+          <div class="redes-icon">
+            <img src="/assets/img/instagram.svg" alt="Icono de Instagram">
+          </div>
+          <div class="redes-texto">&#64;DNP_COLOMBIA</div>
+        </a>
+        <a class="gov-co-link-venta redes-link" href="https://www.facebook.com/DNPColombia" target="_blank" title="Red Social Facebook">
+          <div class="redes-icon">
+            <img src="/assets/img/facebook.svg" alt="Icono de Facebook">
+          </div>
+          <div class="redes-texto">&#64;DNPCOLOMBIA</div>
+        </a>
+        <a class="gov-co-link-venta redes-link" href="https://www.youtube.com/channel/UCx25Fx8FD1URCYzlGVyLZ0w" target="_blank" title="Red Social Youtube">
+          <div class="redes-icon">
+            <img src="/assets/img/youtube.svg" alt="Icono de Youtube">
+          </div>
+          <div class="redes-texto">DNP COLOMBIA</div>
+        </a>
+        <a class="gov-co-link-venta redes-link" href="https://www.linkedin.com/company/departamento-nacional-de-planeacion/" target="_blank" title="Red Social LinkedIn">
+          <div class="redes-icon">
+            <img src="/assets/img/linkedin.svg" alt="Icono de LinkedIn">
+          </div>
+          <div class="redes-texto">DNP COLOMBIA</div>
+        </a>
+        <a class="gov-co-link-venta redes-link" href="https://www.tiktok.com/@dnp_colombia" target="_blank" title="Red Social Tiktok">
+          <div class="redes-icon">
+            <img src="/assets/img/tiktok.svg" alt="Icono de Tiktok">
+          </div>
+          <div class="redes-texto">&#64;DNP_COLOMBIA</div>
+        </a>
+      </div>
+    </div>
+    <div class="gov-co-conta-venta">
+      <div>
+        <h5 class="sub-titulo-venta"><i class="fa fa-phone fa-telefono" aria-hidden="true"></i><span class="govco-icon govco-icon-telephone size-1x"></span>Contacto</h5>
+        <div class="row-data">
+          <div class="gov-detalles-venta-conta">
+            <p>Teléfono Conmutador: +57 601 381 50 00</p>
+            <p style="display: none;">Línea de servicio a la ciudadanía: 01 8000 121221</p>
+            <p>Línea gratuita anticorrupción: 01 8000 121221 opción 2</p>
+            <p>Correo electrónico: <a href="mailto:servicioalciudadano@dnp.gov.co">servicioalciudadano&#64;dnp.gov.co</a></p>
+            <p>Buzón de notificaciones DNP: <a href="mailto:notificacionesjudiciales@dnp.gov.co">notificacionesjudiciales&#64;dnp.gov.co</a></p>
+          </div>
+        </div>
+
+        <!-- Acceso autenticado (funcionarios DNP). Único punto de entrada a la
+             sesión: el menú superior no expone inicio de sesión. -->
+        <a class="gov-co-acceso-autenticado"
+           routerLink="/autenticacion"
+           [attr.title]="estaAutenticado() ? 'Sesión activa de ' + nombre() : 'Ingreso autenticado para funcionarios del DNP'">
+          <i class="pi"
+             [class.pi-lock]="!estaAutenticado()"
+             [class.pi-lock-open]="estaAutenticado()"
+             aria-hidden="true"></i>
+          <span>{{ estaAutenticado() ? 'Sesión activa: ' + nombre() : 'Ingreso funcionarios' }}</span>
+        </a>
+      </div>
+      <div class="gov-co-pilo-venta">
+        <a class="goc-co-link-poli-venta" href="https://pqrsd.dnp.gov.co">Formule su petición PQRSD</a>
+        <a class="goc-co-link-poli-venta" href="https://dnp.gov.co/Politica-de-seguridad#terminos-y-condiciones">Términos y condiciones</a>
+        <a class="goc-co-link-poli-venta link-poli" href="https://www.dnp.gov.co/Politica-de-seguridad#politica-de-privacidad">Política de privacidad</a>
+        <a class="goc-co-link-poli-venta link-poli" href="https://www.dnp.gov.co/Politica-de-seguridad#politica-derechos-de-autor">Política de derechos de autor</a>
+        <a class="goc-co-link-poli-venta" routerLink="/mapa-del-sitio">Mapa del sitio</a>
+      </div>
+    </div>
+  </div>
+</footer>

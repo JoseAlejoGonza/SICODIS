@@ -1,0 +1,149 @@
+<!-- prototipo-sgp.component.html -->
+<div class="container">
+  <app-infografia-popup sistema="sgp"></app-infografia-popup>
+  <div class="card flex justify-center">
+  </div>
+  <!-- Sección A: Banner con título -->
+  <div class="gradient-banner">
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Sistema General de Participaciones (SGP)</h1>
+      <p>Consulte el resumen de los recursos distribuidos del SGP en la vigencia seleccionada.
+ 	 	 	</p>
+    </div>
+  </div>
+
+  <!-- Fechas de información -->
+  <div class="dates-buttons-container">
+    <div style="width: 83%;">
+      <p class="date-update">Fecha de consulta: {{ fechaActual }}</p>
+      <p class="date-update">Cifras en pesos corrientes</p>
+    </div>
+  </div>
+
+  <!-- Card principal de resumen -->
+  <div class="resumen-card">
+
+    <!-- Encabezado: título + selector vigencia -->
+    <div class="resumen-header">
+      <h2 class="resumen-titulo">Resumen de la distribución del presupuesto &ndash; Vigencia {{ selectedVigencia.label }}</h2>
+      <div class="vigencia-selector-inline">
+        <span class="vigencia-label-text">Vigencia:</span>
+        <p-select
+          [options]="vigencias"
+          [(ngModel)]="selectedVigencia"
+          (onChange)="onVigenciaChange($event)"
+          optionLabel="label"
+          placeholder="Vigencia">
+        </p-select>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+      <div class="kpi-item">
+        <div class="kpi-label">AVANCE GENERAL</div>
+        <div class="kpi-value kpi-avance">{{ cifras.avance | percentFormat:2 }}</div>
+      </div>
+      <div class="kpi-divider"></div>
+      <div class="kpi-item">
+        <div class="kpi-label">RECURSOS PENDIENTES</div>
+        <div class="kpi-value">${{ cifras.pendiente | billonesFormat }}</div>
+      </div>
+      <div class="kpi-divider"></div>
+      <div class="kpi-item">
+        <div class="kpi-label">PRESUPUESTO SGP</div>
+        <div class="kpi-value">{{ cifras.presupuesto | billonesFormat }}</div>
+      </div>
+    </div>
+
+    <!-- Tabla de participaciones jerárquica -->
+    <div class="card">
+      <p-treetable [value]="treeTableData"
+                   dataKey="key"
+                   [scrollable]="true"
+                   [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
+                   styleClass="tabla-participaciones-tree"
+                   [tableStyle]="{'min-width':'100%'}"
+                   *ngIf="treeTableData.length > 0">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="concepto-header">Concepto</th>
+            <th class="col-number">Presupuesto ($)</th>
+            <th class="col-number">Distribuido ($)</th>
+            <th class="col-number">Pendiente ($)</th>
+            <th class="col-avance">Estado Avance (%)</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr>
+            <td class="concepto-cell" [style.color]="'#103d6e'" [style.font-weight]="rowNode.parent ? '600' : '700'">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              {{ rowData.concepto }}
+            </td>
+            <td class="col-number">{{ rowData.presupuesto | numberFormat }}</td>
+            <td class="col-number">{{ rowData.distribuido | numberFormat }}</td>
+            <td class="col-number">{{ rowData.pendiente | numberFormat }}</td>
+            <td class="col-avance">
+              <span class="avance-badge"
+                    [class.badge-green]="rowData.avance >= 1"
+                    [class.badge-orange]="rowData.avance < 1">
+                {{ rowData.avance | percentFormat:2 }}
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr class="total-row">
+            <td><strong>Total SGP</strong></td>
+            <td class="col-number">
+              <strong>{{ getTreeTableTotal('presupuesto') | numberFormat }}</strong>
+            </td>
+            <td class="col-number">
+              <strong>{{ getTreeTableTotal('distribuido') | numberFormat }}</strong>
+            </td>
+            <td class="col-number">
+              <strong>{{ getTreeTableTotal('pendiente') | numberFormat }}</strong>
+            </td>
+            <td></td>
+          </tr>
+        </ng-template>
+      </p-treetable>
+
+      <!-- Mensaje cuando no hay datos -->
+      <div *ngIf="treeTableData.length === 0"
+           style="padding: 1rem; text-align: center; color: #666;">
+        <p>No hay datos para mostrar para la vigencia: {{ selectedVigencia.label }}</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sección D: Notas informativas -->
+  <div class="final-notes-container">
+    <strong>NOTAS</strong>
+    <p class="final-note" *ngIf="cifras.pendiente > 0">
+      <strong>(1)</strong> Los recursos pendientes por distribuir corresponden a una parte de las doce doceavas de la participación para educación ($ 18.644 miles de millones) y las once doceavas de la asignación especial para el FONPET ($ 2.731 miles de millones)</p>
+  </div>
+
+
+  <!-- Sección F: Herramientas y recursos -->
+  <div class="herramientas-recursos-section">
+    <h2>Herramientas y Recursos</h2>
+    <div class="herramientas-cards-container">
+      <div class="herramienta-card" 
+           *ngFor="let recurso of recursos" 
+           (click)="onResourceClick(recurso)"
+           style="cursor: pointer;">
+        <div class="card-icon-placeholder">
+          <img [src]="recurso.icon" alt="{{ recurso.titulo }}" class="mr-2 sgp-icon">
+        </div>
+        <div class="card-content">
+          <h3>{{ recurso.titulo }}</h3>
+          <p>{{ recurso.descripcion }}</p>
+        </div>
+        <mat-icon style="font-size: 32px; color: #403a3a;">chevron_right</mat-icon>        
+      </div>
+    </div>
+  </div>
+</div>

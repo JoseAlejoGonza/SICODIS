@@ -1,49 +1,68 @@
-<div class="container">
-    <div class="section-gov">
-        <img class="logo" src="/assets/img/icon-header-gov.svg" alt="gov.co">
+<!-- src/app/components/header/header.component.html -->
+<div class="header-container">
+  <!-- Barra superior del gobierno -->
+  <nav class="navbar navbar-expand-lg barra-superior-govco" aria-label="Barra superior">
+    <div class="header-govco-container">
+      <a href="https://www.gov.co/" target="_blank" aria-label="Portal del Estado Colombiano - GOV.CO"></a>
+    </div>    
+  </nav>
+  
+  <!-- Sección de logos - esta NO se queda sticky -->
+  <div class="logos-section-container">
+    <div class="col" id="header-logos-container">
+      <div id="dnp-logo-container" style="width: 230px;border-right:2px solid #666666">
+        <a href="https://www.dnp.gov.co">
+          <img id="ctl00_Image1" src="https://www.dnp.gov.co/img/LOGO-COLOMBIA-POTENCIA-DE-LA-VIDA-1.png"
+            style="width:80%;border-width:0px;"
+            alt="Logo del Departamento Nacional de Planeación"
+            title="Logo del Departamento Nacional de Planeación">
+        </a>
+      </div>
+      <div id="site-logo-container" style="padding-left: 30px">
+        <a href="/">
+          <img id="ctl00_Image2" src="assets/img/logosicodisclaro.png"
+            style="width:30%;border-width:0px;"
+            alt="Logo SICODIS"
+            title="Sistema de Consulta de Distribuciones - SICODIS">
+        </a>
+      </div>
     </div>
-    <div class="section-icons">
-        <img class="logo" src="/assets/img/DNP_SICODIS.svg" alt="DNP_SICODIS">
+  </div>
+  
+  <!-- Sección del menú - esta SÍ se queda sticky -->
+  <div class="menu-container">
+    <div class="menu-inner">
+      <p-menubar [model]="items()" />
     </div>
-    <div class="section-menu">
-        <div class="menu">
-            <button mat-button routerLink="/" ng-reflect-router-link="/" (click)="redirectHome()">Inicio</button>
-            <!-- <mat-menu #aboveMenu="matMenu" yPosition="below">
-              <button mat-menu-item>Item 1</button>
-              <button mat-menu-item>Item 2</button>
-            </mat-menu> -->
-            
-            <button mat-button [matMenuTriggerFor]="belowMenu">Sobre SICODIS</button>
-            <mat-menu #belowMenu="matMenu" yPosition="below">
-              <button mat-menu-item>Item 1</button>
-              <button mat-menu-item>Item 2</button>
-            </mat-menu>
-            
-            <button mat-button  (click)="redirectSGR()">SGP</button>
-            <!-- <mat-menu #beforeMenu="matMenu" yPosition="below">
-              <button mat-menu-item>Item 1</button>
-              <button mat-menu-item>Item 2</button>
-            </mat-menu> -->
-            
-            
-            <button mat-button routerLink="/reports-sgr" ng-reflect-router-link="reports-sgr" (click)="redirectSGR()">SGR</button>
-            <!-- <mat-menu #afterMenu="matMenu" yPosition="below">
-              <button mat-menu-item>Item 1</button>
-              <button mat-menu-item>Item 2</button>
-            </mat-menu> -->
+  </div>
 
-            <button mat-button [matMenuTriggerFor]="afterMenu">Histórico</button>
-            <mat-menu #afterMenu="matMenu" yPosition="below">
-              <button mat-menu-item>Item 1</button>
-              <button mat-menu-item>Item 2</button>
-            </mat-menu>
+    <!-- ================= MODAL VIDEO BIENVENIDA ================= -->
 
-            <button mat-button [matMenuTriggerFor]="afterMenu">Ayuda</button>
-            <mat-menu #afterMenu="matMenu" yPosition="below">
-              <button mat-menu-item>Item 1</button>
-              <button mat-menu-item>Item 2</button>
-            </mat-menu>
-        </div>
-    </div>
+    <p-dialog
+      header="Preguntas Frecuentes"
+      [(visible)]="showVideo"
+      [modal]="true"
+      appendTo="body"
+      [closable]="true"
+      [dismissableMask]="true"
+      [style]="{width:'70vw', top:'5vh'}"
+      [breakpoints]="{'960px':'95vw'}"
+    >
+      <div style="position: relative; padding-top: 56.25%;">
+        <video
+          controls         
+          playsinline
+          style="position:absolute; inset:0; width:100%; height:100%;"
+        >
+          <source
+            src="https://colaboracion.dnp.gov.co/CDT/Inversiones%20y%20finanzas%20pblicas/Documentos%20GFT/SICODIS/TutorialSICODIS.mp4"
+            type="video/mp4"
+          />
+          Tu navegador no soporta video HTML5.
+        </video>
+      </div>
+    </p-dialog>
+
+    <!-- =========================================================== -->
 
 </div>

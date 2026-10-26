@@ -1,0 +1,195 @@
+<div class="container">
+  <!-- Header section -->
+  <div class="gradient-banner">    
+    <div class="gradient-overlay"></div>
+    <div class="banner-content">
+      <h1>Presupuesto - Sistema General de Participaciones (SGP)</h1>
+      <p> Consulte los recursos asignados por entidad territorial, desagregados por última doceava de la vigencia
+         anterior más las once doceavas de la vigencia (excepto educación que corresponde a doce doceavas); lo que 
+         corresponde a los recursos efectivamente girados por los Ministerios competentes e incorporados en los 
+         presupuestos de las entidades territoriales, para la vigencia seleccionada.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Filters section -->
+  <div class="filters-section">
+    <div class="filters-panel">
+      <div class="filters-row">
+        <!-- Vigencia -->
+        <div class="p-field vigencia-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="vigencia" 
+              [options]="vigencias" 
+              inputId="vigenciaSelect" 
+              [(ngModel)]="selectedVigencia"
+              (onChange)="onVigenciaChange($event)"
+              optionValue="id"
+              optionLabel="label">
+            </p-select>
+            <label for="vigenciaSelect">Vigencia</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Departamento -->
+        <div class="p-field department-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="departamento" 
+              [options]="departamentos" 
+              inputId="departamentoSelect"
+              [(ngModel)]="selectedDepartamento"
+              (onChange)="onDepartamentoChange($event)"
+              optionValue="id"
+              optionLabel="label">
+            </p-select>
+            <label for="departamentoSelect">Departamento</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Municipio -->
+        <div class="p-field town-select">
+          <p-floatlabel class="w-full md:w-56" variant="on">
+            <p-select 
+              id="municipio" 
+              [options]="municipios" 
+              inputId="municipioSelect"
+              [(ngModel)]="selectedMunicipio"
+              (onChange)="onMunicipioChange($event)"
+              [disabled]="isLoadingMunicipios || !selectedDepartamento"
+              [loading]="isLoadingMunicipios"
+              optionValue="id"
+              optionLabel="label">
+            </p-select>
+            <label for="municipioSelect">Municipio</label>
+          </p-floatlabel>
+        </div>
+
+        <!-- Botones -->
+        <!-- <button pButton type="button" 
+                icon="pi pi-filter" 
+                label="Aplicar Filtros" 
+                class="p-button-primary"
+                (click)="applyFilters()">
+        </button> -->
+        <button pButton type="button" 
+                icon="pi pi-eraser" 
+                label="Limpiar Filtros" 
+                class="p-button-secondary"
+                (click)="clearFilters()">
+        </button>
+      </div>
+    </div>    
+  </div>
+
+  <div class="dates-buttons-container">
+    <div style="width: 84%;">
+      <p class="date-update">Fecha de consulta: {{ fechaActual }}</p>
+      <p class="date-update">Cifras en pesos corrientes</p>
+    </div>    
+  </div>
+
+  <!-- Tarjeta p-card con métricas -->
+  <div class="metrics-card-section">
+    <p-card class="metrics-card">
+      <div *ngIf="isLoading" style="padding: 1rem; text-align: center;">
+       <i class="pi pi-spin pi-spinner" style="font-size: 1.5rem; color: #0f4987;"></i>
+       <p style="color:#0f4987">Cargando información...</p>
+      </div>
+      <div class="metrics-row">
+        <div class="metric-item">
+          <div class="metric-value">{{ formatNumber(cifras.ultimaDoceava) }}</div>
+          <div class="metric-label">Última Doceava</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value">{{ formatNumber(cifras.onceDoceava) }}</div>
+          <div class="metric-label">Once Doceava</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-value"> {{ formatNumber(cifras.totalAsignado) }}</div>
+          <div class="metric-label">Total Asignado</div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Tabla de asignación SGP -->
+  <div class="table-section">
+    <div class="card">
+      <h3 class="table-title">Asignación SGP: Última Doceava + Once Doceavas</h3>
+      
+      <!-- Loading indicator -->
+      <div *ngIf="isLoadingTable" style="padding: 1rem; text-align: center;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="pi pi-spin pi-spinner" style="font-size: 1.2rem; color: #0f4987;"></i>
+          <span style="color: #0f4987; font-size: 0.9rem;">Cargando datos...</span>
+        </div>
+      </div>
+      
+      <p-treetable 
+        #treeTable
+        [value]="treeTableData" 
+        dataKey="concepto" 
+        [scrollable]="true"
+        [scrollHeight]="treeTableData && treeTableData.length > 5 ? '400px' : 'auto'"
+        styleClass="sgp-treetable"
+        [tableStyle]="{'min-width':'20rem'}"
+        *ngIf="treeTableData.length > 0 && !isLoadingTable">
+        
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="table-header concept-header">Concepto</th>
+            <th class="table-header" style="text-align: right;">Última Doceava</th>
+            <th class="table-header" style="text-align: right;">Once Doceavas</th>
+            <th class="table-header" style="text-align: right;">Total</th>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+          <tr>
+            <td class="concept-cell">
+              <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+              <strong>{{ rowData.concepto }}</strong>
+            </td>
+            <td class="value-cell" style="text-align: right;">{{ formatNumber(rowData.ultimaDoceava) }}</td>
+            <td class="value-cell" style="text-align: right;">{{ formatNumber(rowData.onceDoceavas) }}</td>
+            <td class="value-cell" style="text-align: right;">{{ formatNumber(rowData.total) }}</td>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="footer">
+          <tr class="total-row">
+            <td class="concept-cell"><strong>Total General</strong></td>
+            <td class="value-cell" style="text-align: right;"><strong>{{ formatNumber(getColumnTotal('ultimaDoceava')) }}</strong></td>
+            <td class="value-cell" style="text-align: right;"><strong>{{ formatNumber(getColumnTotal('onceDoceavas')) }}</strong></td>
+            <td class="value-cell" style="text-align: right;"><strong>{{ formatNumber(getColumnTotal('total')) }}</strong></td>
+          </tr>
+        </ng-template>
+      </p-treetable>
+      
+             <!-- Notas -->
+       <div class="table-notes">
+         <h4>NOTAS</h4>
+        <p class="final-note" *ngIf="this.selectedVigencia == 13">
+          <strong>(1)</strong> Los recursos pendientes por distribuir corresponden a una parte de las doce doceavas de la participación para educación ($ 18.644 miles de millones) y las once doceavas de la asignación especial para el FONPET ($ 2.731 miles de millones)
+        </p>
+        <p class="final-note">
+          La asignación de Educación corresponde a las doce doceavas de la vigencia.
+        </p>
+
+       <!-- Botón Descargar -->
+       <div class="download-button-container">
+         <button pButton type="button" 
+                 icon="pi pi-download" 
+                 label="Descargar" 
+                 class="p-button-primary"
+                 (click)="downloadData()">
+         </button>
+       </div>
+       
+     </div>
+   </div>
+</div>
+
+	  

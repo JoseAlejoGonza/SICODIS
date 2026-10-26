@@ -1,0 +1,642 @@
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpResponse } from '@angular/common/http';
+import { ButtonModule } from 'primeng/button';
+import { FloatLabel } from 'primeng/floatlabel';
+import { FormsModule } from '@angular/forms';
+import { ChartModule } from 'primeng/chart';
+import { TableModule } from 'primeng/table';
+import { TreeTableModule } from 'primeng/treetable';
+import { Select } from 'primeng/select';
+import { TreeNode } from 'primeng/api';
+
+import { InfoPopupComponent } from '../info-popup/info-popup.component';
+import { NumberFormatPipe } from '../../utils/numberFormatPipe';
+import {
+  SicodisApiService,
+  FuncionamientoSiglasDiccionario,
+  DiccionarioItem,
+  SiglasItem,
+  VigenciaPlanBienal,
+  DepartamentoPlanBienal,
+  MunicipioPlanBienal,
+  DetallePlanBienal
+} from '../../services/sicodis-api.service';
+import { organizeCategoryData } from '../../utils/hierarchicalDataStructureV2';
+
+@Component({
+  selector: 'app-sgr-plan-bienal-caja',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ButtonModule,
+    FloatLabel,
+    FormsModule,
+    ChartModule,
+    TableModule,
+    TreeTableModule,
+    Select,
+    InfoPopupComponent,
+    NumberFormatPipe,
+  ],
+  templateUrl: './sgr-plan-bienal-caja.component.html',
+  styleUrl: './sgr-plan-bienal-caja.component.scss',
+})
+export class SgrPlanBienalCajaComponent implements OnInit {
+
+  @ViewChild('planBienalCajaTable') planBienalCajaTable: any;
+
+  // Estado de resaltado sincronizado con el hover del gráfico
+  highlightedPeriod: string | null = null;
+
+  // Popups Diccionario y Siglas
+  showDiccionarioPopup = false;
+  showSiglasPopup = false;
+  diccionarioContent = '';
+  siglasContent = '';
+  private siglasDiccionarioData: FuncionamientoSiglasDiccionario | null = null;
+
+  // Estado de carga
+  isLoading = false;
+  isLoadingMunicipios = false;
+
+  // Evita aplicar el filtro inicial más de una vez (vigencias y departamentos
+  // llegan en respuestas asíncronas independientes).
+  private filtroInicialAplicado = false;
+
+  // Opciones de filtros
+  vigencias: VigenciaPlanBienal[] = [];
+  selectedVigencia: VigenciaPlanBienal | null = null;
+
+  beneficiarios = [
+    { label: 'Departamentos', value: 1 },
+    { label: 'Municipios', value: 2 },
+  ];
+  selectedBeneficiario: any = null;
+
+  departamentosList: DepartamentoPlanBienal[] = [];
+  selectedDepartamento: DepartamentoPlanBienal | null = null;
+
+  municipiosList: MunicipioPlanBienal[] = [];
+  selectedMunicipio: MunicipioPlanBienal | null = null;
+
+  // Periodos para columnas de la tabla (24 meses)
+  periods: string[] = [];
+
+  // Datos de tabla
+  tableData: TreeNode[] = [];
+  tableCols: any[] = [];
+
+  // Datos del grafico
+  barChartData: any;
+  barChartOptions: any;
+
+  constructor(
+    private sicodisApiService: SicodisApiService,
+    private ngZone: NgZone
+  ) {}
+
+  ngOnInit(): void {
+    this.buildPeriods();
+    this.initializeTableColumns();
+    this.initializeChart();
+    this.cargarSiglasDiccionario();
+    this.cargarVigencias();
+    this.cargarDepartamentos();
+  }
+
+  private buildPeriods(): void {
+    const years = [2025, 2026];
+    const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    years.forEach(y => months.forEach(m => this.periods.push(`${y}-${m}`)));
+  }
+
+  get vigenciaLabel(): string {
+    return this.selectedVigencia ? this.selectedVigencia.vigencia.replace(' - ', '-') : '';
+  }
+
+  /**
+   * Norma (Ley o Decreto) que rige cada bienio, indexada por el año inicial del
+   * rango de vigencia. El API solo devuelve el rango de años en `vigencia`
+   * (p. ej. "2025 - 2026"), sin la norma, así que la fuente se resuelve aquí.
+   */
+  private static readonly NORMA_POR_ANIO_INICIAL: Record<string, string> = {
+    '2025': 'Ley 2441 de 2024',
+    '2023': 'Ley 2279 de 2022',
+    '2021': 'Ley 2072 de 2020',
+    '2019': 'Ley 1942 de 2018',
+    '2017': 'Decreto 2190 de 2016',
+    '2015': 'Ley 1744 de 2014',
+    '2013': 'Ley 1606 de 2012',
+  };
+
+  /**
+   * Norma asociada al bienio seleccionado, usada en la nota (2) de fuente para
+   * que refleje el bienio actual.
+   */
+  get normaVigencia(): string {
+    if (!this.selectedVigencia) return '';
+    const anioInicial = this.selectedVigencia.vigencia.trim().split(/\s*-\s*/)[0];
+    return SgrPlanBienalCajaComponent.NORMA_POR_ANIO_INICIAL[anioInicial] ?? '';
+  }
+
+  private getYearsFromVigencia(vigencia: VigenciaPlanBienal): [number, number] {
+    const parts = vigencia.vigencia.split(' - ');
+    return [parseInt(parts[0].trim()), parseInt(parts[1].trim())];
+  }
+
+  private rebuildPeriodsAndColumns(year1: number, year2: number): void {
+    this.periods = [];
+    const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    [year1, year2].forEach(y => months.forEach(m => this.periods.push(`${y}-${m}`)));
+    this.tableCols = [
+      { field: 'concepto', header: 'Concepto', width: '350px' },
+      ...this.periods.map(period => ({ field: period, header: period, width: '170px' }))
+    ];
+  }
+
+  private initializeTableColumns(): void {
+    this.tableCols = [
+      { field: 'concepto', header: 'Concepto', width: '350px' },
+      ...this.periods.map(period => ({ field: period, header: period, width: '170px' }))
+    ];
+  }
+
+  private initializeChart(): void {
+    const monthNames = [
+      'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+      'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre',
+    ];
+    const labels = [...monthNames, ...monthNames];
+
+    const orange  = '#f97316';
+    const navyBlue = '#1e3a5f';
+
+    // Inicializar con datos vacíos
+    this.barChartData = {
+      labels,
+      datasets: [
+        {
+          label: '2025',
+          data: Array(24).fill(0),
+          backgroundColor: orange,
+          borderColor: orange,
+          borderWidth: 1,
+          barPercentage: 0.85,
+        },
+        {
+          label: '2026',
+          data: Array(24).fill(0),
+          backgroundColor: navyBlue,
+          borderColor: navyBlue,
+          borderWidth: 1,
+          barPercentage: 0.85,
+        },
+      ],
+    };
+
+    this.barChartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            usePointStyle: true,
+            font: { family: '"Work Sans", sans-serif', size: 11 },
+          },
+        },
+        datalabels: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx: any) =>
+              `Total ${ctx.dataset.label}: ${this.formatCurrency(ctx.parsed.y)}`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            font: { family: '"Work Sans", sans-serif', size: 10 },
+            maxRotation: 45,
+          },
+        },
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Cifras en pesos corrientes',
+            font: { family: '"Work Sans", sans-serif', size: 12 },
+          },
+          ticks: {
+            font: { family: '"Work Sans", sans-serif', size: 11 },
+            callback: (value: any) => this.formatCurrency(value),
+          },
+        },
+      },
+      onHover: (event: any, activeElements: any[], chart: any) => {
+        if (activeElements.length > 0) {
+          const datasetIndex = activeElements[0].datasetIndex;
+          const monthIndex = activeElements[0].index;
+          const year = chart.data.datasets[datasetIndex].label;
+          const month = String((monthIndex % 12) + 1).padStart(2, '0');
+          const period = `${year}-${month}`;
+          this.ngZone.run(() => this.onChartHover(period));
+        } else {
+          this.ngZone.run(() => this.clearChartHighlight());
+        }
+      }
+    };
+  }
+
+  private formatCurrency(value: number): string {
+    if (!value && value !== 0) return '';
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
+
+  /**
+   * Carga las vigencias desde el servicio
+   */
+  private cargarVigencias(): void {
+    this.sicodisApiService.getSgrPlanBienalVigencias().subscribe({
+      next: (data) => {
+        // Obs. 5: excluir vigencias que no son bienios (p. ej. "2012"), que no
+        // cuentan con Plan Bienal de Caja. Ver nota al pie del reporte.
+        this.vigencias = data.filter(v => v.vigencia.includes(' - '));
+        // Seleccionar la primera vigencia por defecto (la más reciente)
+        if (this.vigencias.length > 0) {
+          this.selectedVigencia = this.vigencias[0];
+        }
+        this.aplicarFiltroInicialSiListo();
+      },
+      error: (error) => {
+        console.error('Error cargando vigencias:', error);
+      }
+    });
+  }
+
+  /**
+   * Carga los departamentos desde el servicio
+   */
+  private cargarDepartamentos(): void {
+    this.sicodisApiService.getSgrPlanBienalDepartamentos().subscribe({
+      next: (data) => {
+        this.departamentosList = data;
+        // Seleccionar "Todos" por defecto para estandarizar con los demás reportes
+        // y evitar que el selector arranque en blanco (placeholder vacío).
+        this.selectedDepartamento = data.find(d => d.codigo === '0') ?? null;
+        this.aplicarFiltroInicialSiListo();
+      },
+      error: (error) => {
+        console.error('Error cargando departamentos:', error);
+      }
+    });
+  }
+
+  /**
+   * Aplica el filtro automáticamente en la carga inicial una vez que tanto la
+   * vigencia como el departamento por defecto están disponibles. Se ejecuta una
+   * sola vez (vigencias y departamentos llegan en respuestas independientes).
+   */
+  private aplicarFiltroInicialSiListo(): void {
+    if (this.filtroInicialAplicado) return;
+    if (this.selectedVigencia && this.selectedDepartamento) {
+      this.filtroInicialAplicado = true;
+      this.applyFilters();
+    }
+  }
+
+  onBeneficiarioChange(): void {
+    if (this.selectedBeneficiario?.value !== 2) {
+      this.selectedMunicipio = null;
+      this.municipiosList = [];
+    }
+  }
+
+  /**
+   * Carga los municipios cuando se selecciona un departamento
+   */
+  private sortMunicipios(data: MunicipioPlanBienal[]): MunicipioPlanBienal[] {
+    const todos       = data.filter(m => m.codigo === '0');
+    const gobernacion = data.filter(m => m.nombre.startsWith('Gobernación de'));
+    const rest        = data.filter(m => m.codigo !== '0' && !m.nombre.startsWith('Gobernación de'));
+    return [...todos, ...gobernacion, ...rest];
+  }
+
+  onDepartamentoChange(): void {
+    if (this.selectedDepartamento && this.selectedDepartamento.codigo !== '0') {
+      this.isLoadingMunicipios = true;
+      this.sicodisApiService.getSgrPlanBienalMunicipiosDepartamento(this.selectedDepartamento.codigo).subscribe({
+        next: (data) => {
+          this.municipiosList = this.sortMunicipios(data);
+          this.selectedMunicipio = null;
+          this.isLoadingMunicipios = false;
+        },
+        error: (error) => {
+          console.error('Error cargando municipios:', error);
+          this.municipiosList = [];
+          this.isLoadingMunicipios = false;
+        }
+      });
+    } else {
+      // Si selecciona "Todos", limpiar municipios
+      this.municipiosList = [];
+      this.selectedMunicipio = null;
+    }
+  }
+
+  /**
+   * Carga los datos del plan bienal con los filtros aplicados
+   */
+  private cargarDatosPlanBienal(): void {
+    if (!this.selectedVigencia || !this.selectedDepartamento) {
+      console.warn('Debe seleccionar vigencia y departamento');
+      return;
+    }
+
+    const [year1, year2] = this.getYearsFromVigencia(this.selectedVigencia);
+    this.rebuildPeriodsAndColumns(year1, year2);
+
+    const codigoEntidad = this.selectedDepartamento.codigo;
+    const codigoMunicipio = this.selectedMunicipio?.codigo || '0';
+
+    this.isLoading = true;
+    this.sicodisApiService.getSgrPlanBienalDetalle(
+      this.selectedVigencia.id_vigencia,
+      codigoEntidad,
+      codigoMunicipio
+    ).subscribe({
+      next: (data) => {
+        this.procesarDatosTabla(data);
+        this.actualizarGrafico(data, year1, year2);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error cargando datos del plan bienal:', error);
+        this.tableData = [];
+        this.isLoading = false;
+      }
+    });
+  }
+
+  /**
+   * Procesa los datos para la tabla usando estructura jerárquica
+   */
+  private procesarDatosTabla(data: DetallePlanBienal[]): void {
+    // Mapear datos agregando el campo "categoria" que usa el valor de "Orden"
+    const mappedData = data.map(item => {
+      const row: any = {
+        concepto: item.Concepto,
+        orden: item.Orden,
+        categoria: String(item.Orden), // Convertir Orden a string para usar con organizeCategoryData
+        idConcepto: item.IdConcepto,
+      };
+
+      // Determinar la sección para estilos
+      if (item.IdConcepto === '1000') {
+        row.section = 'inversion';
+      } else if (item.IdConcepto === '2000') {
+        row.section = 'ahorro';
+      } else if (item.IdConcepto === '3000') {
+        row.section = 'otros';
+      } else if (item.IdConcepto === '99') {
+        row.section = 'total';
+      }
+
+      // Copiar todos los períodos
+      this.periods.forEach(period => {
+        row[period] = item[period] || 0;
+      });
+
+      return row;
+    });
+
+    // Cuando se consulta un municipio específico, eliminar filas sin datos en ningún período
+    const municipioEspecifico = this.selectedMunicipio?.codigo && this.selectedMunicipio.codigo !== '0';
+    const dataFinal = municipioEspecifico
+      ? mappedData.filter(row =>
+          row.idConcepto === '99' ||
+          this.periods.some(p => row[p] !== 0)
+        )
+      : mappedData;
+
+    this.tableData = organizeCategoryData(dataFinal);
+  }
+
+  /**
+   * Actualiza el gráfico con los nuevos datos
+   */
+  private actualizarGrafico(data: DetallePlanBienal[], year1: number, year2: number): void {
+    // Obs. 1: la gráfica muestra el TOTAL mensual del PBC (inversión + ahorro +
+    // administración) por año. El desglose por concepto se consulta en la tabla inferior.
+    const totalRow = data.find(r => r.IdConcepto === '99');
+
+    const monthNames = [
+      'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+      'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre',
+    ];
+
+    const valoresPorMes = (year: number): number[] =>
+      monthNames.map((_, i) => {
+        const m = String(i + 1).padStart(2, '0');
+        return (totalRow?.[`${year}-${m}`] as number) ?? 0;
+      });
+
+    const data1 = valoresPorMes(year1);
+    const data2 = valoresPorMes(year2);
+
+    // Obs. 5: actualizar SIEMPRE las etiquetas de año según la vigencia seleccionada,
+    // aunque no haya datos, para que la gráfica sea consistente con el filtro.
+    this.barChartData.datasets[0].label = String(year1);
+    this.barChartData.datasets[1].label = String(year2);
+    this.barChartData.datasets[0].data = [...data1, ...Array(12).fill(null)];
+    this.barChartData.datasets[1].data = [...Array(12).fill(null), ...data2];
+    this.barChartData = { ...this.barChartData };
+  }
+
+  /**
+   * Verificar si una celda debe estar resaltada
+   */
+  isColumnHighlighted(period: string): boolean {
+    return period === this.highlightedPeriod;
+  }
+
+  applyFilters(): void {
+    console.log('Aplicando filtros...', {
+      vigencia: this.selectedVigencia,
+      beneficiario: this.selectedBeneficiario,
+      departamento: this.selectedDepartamento,
+      municipio: this.selectedMunicipio,
+    });
+
+    this.cargarDatosPlanBienal();
+  }
+
+  clearFilters(): void {
+    this.selectedVigencia = this.vigencias.length > 0 ? this.vigencias[0] : null;
+    this.selectedBeneficiario = null;
+    this.selectedDepartamento = null;
+    this.selectedMunicipio = null;
+    this.municipiosList = [];
+    this.tableData = [];
+
+    // Reiniciar gráfico
+    this.initializeChart();
+  }
+
+  showPopupDiccionario(): void {
+    this.diccionarioContent = this.generarContenidoDiccionario();
+    this.showDiccionarioPopup = true;
+  }
+
+  showPopupSiglas(): void {
+    this.siglasContent = this.generarContenidoSiglas();
+    this.showSiglasPopup = true;
+  }
+
+  closeDiccionarioPopup(): void { this.showDiccionarioPopup = false; }
+  closeSiglasPopup(): void      { this.showSiglasPopup = false; }
+
+  exportarExcel(): void {
+    if (!this.selectedVigencia || !this.selectedDepartamento) return;
+
+    this.isLoading = true;
+    this.sicodisApiService.getSgrPlanBienalDescargarDetalle({
+      idVigencia: this.selectedVigencia.id_vigencia,
+      vigencia: this.selectedVigencia.vigencia,
+      codigoDepto: this.selectedDepartamento.codigo,
+      departamento: this.selectedDepartamento.nombre,
+      codigoMunicipio: this.selectedMunicipio?.codigo || '0',
+      municipio: this.selectedMunicipio?.nombre || 'Todos'
+    }).subscribe({
+      next: (response) => {
+        this.descargarBlob(response, 'DetallePlanBienalCaja.xlsx');
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error descargando el detalle del Plan Bienal de Caja:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private descargarBlob(response: HttpResponse<Blob>, nombrePorDefecto: string): void {
+    const blob = response.body;
+    if (!blob) return;
+    const filename = this.extraerNombreArchivo(response.headers.get('content-disposition')) || nombrePorDefecto;
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    window.URL.revokeObjectURL(link.href);
+  }
+
+  private extraerNombreArchivo(contentDisposition: string | null): string | null {
+    if (contentDisposition) {
+      const match = /filename[^;=\n]*=(?:UTF-8'')?["']?([^;"'\n]+)/i.exec(contentDisposition);
+      if (match && match[1]) return decodeURIComponent(match[1].trim());
+    }
+    return null;
+  }
+
+  async cargarSiglasDiccionario(): Promise<void> {
+    try {
+      const data = await this.sicodisApiService.getSgrSiglasDiccionario().toPromise();
+      this.siglasDiccionarioData = data || null;
+    } catch (error) {
+      console.error('Error cargando diccionario y siglas:', error);
+      this.siglasDiccionarioData = null;
+    }
+  }
+
+  private generarContenidoDiccionario(): string {
+    if (!this.siglasDiccionarioData?.diccionario?.data) {
+      return '<p>No se pudieron cargar los datos del diccionario.</p>';
+    }
+    let html = '<div style="font-size:11px"><table style="width:100%;border-collapse:collapse">';
+    html += '<thead><tr style="background:#f8f9fa">'
+      + '<th style="border:1px solid #dee2e6;padding:8px;text-align:left">Id</th>'
+      + '<th style="border:1px solid #dee2e6;padding:8px;text-align:left">Concepto</th>'
+      + '<th style="border:1px solid #dee2e6;padding:8px;text-align:left">Descripción</th>'
+      + '</tr></thead><tbody>';
+    this.siglasDiccionarioData.diccionario.data.forEach((item: DiccionarioItem) => {
+      html += `<tr>
+        <td style="border:1px solid #dee2e6;padding:8px;vertical-align:top"><strong>${item.id_concepto}</strong></td>
+        <td style="border:1px solid #dee2e6;padding:8px;vertical-align:top"><strong>${item.concepto}</strong></td>
+        <td style="border:1px solid #dee2e6;padding:8px;vertical-align:top">${item.descripcion}</td>
+      </tr>`;
+    });
+    html += '</tbody></table></div>';
+    return html;
+  }
+
+  private generarContenidoSiglas(): string {
+    if (!this.siglasDiccionarioData?.siglas?.data) {
+      return '<p>No se pudieron cargar los datos de las siglas.</p>';
+    }
+    let html = '<div style="font-size:11px"><table style="width:100%;border-collapse:collapse">';
+    html += '<thead><tr style="background:#f8f9fa">'
+      + '<th style="border:1px solid #dee2e6;padding:8px;text-align:left">Sigla</th>'
+      + '<th style="border:1px solid #dee2e6;padding:8px;text-align:left">Descripción</th>'
+      + '</tr></thead><tbody>';
+    this.siglasDiccionarioData.siglas.data.forEach((item: SiglasItem) => {
+      html += `<tr>
+        <td style="border:1px solid #dee2e6;padding:8px;vertical-align:top"><strong>${item.sigla}</strong></td>
+        <td style="border:1px solid #dee2e6;padding:8px;vertical-align:top">${item.descripcion}</td>
+      </tr>`;
+    });
+    html += '</tbody></table></div>';
+    return html;
+  }
+
+  /**
+   * Manejar hover sobre el gráfico
+   */
+  onChartHover(period: string): void {
+    this.highlightedPeriod = period;
+    setTimeout(() => this.scrollToHighlightedColumn(), 100);
+  }
+
+  /**
+   * Limpiar el resaltado
+   */
+  clearChartHighlight(): void {
+    this.highlightedPeriod = null;
+  }
+
+  /**
+   * Hacer scroll a la columna resaltada
+   */
+  private scrollToHighlightedColumn(): void {
+    if (!this.highlightedPeriod || !this.planBienalCajaTable) return;
+
+    const tableNative: HTMLElement = this.planBienalCajaTable.el.nativeElement;
+    const scrollWrapper = (
+      tableNative.querySelector('.p-treetable-scrollable-body') ||
+      tableNative.querySelector('.p-treetable-wrapper') ||
+      tableNative.querySelector('[data-pc-section="wrapper"]')
+    ) as HTMLElement;
+
+    const highlightedCell = tableNative.querySelector('td.highlighted-column') as HTMLElement;
+
+    if (!scrollWrapper || !highlightedCell) return;
+
+    // Calcular posición de la celda relativa al scroll container
+    const cellLeft = highlightedCell.offsetLeft;
+    const containerScrollLeft = scrollWrapper.scrollLeft;
+    const containerWidth = scrollWrapper.clientWidth;
+    const cellWidth = highlightedCell.offsetWidth;
+
+    if (cellLeft < containerScrollLeft || cellLeft + cellWidth > containerScrollLeft + containerWidth) {
+      scrollWrapper.scrollTo({
+        left: cellLeft - containerWidth / 2 + cellWidth / 2,
+        behavior: 'smooth'
+      });
+    }
+  }
+}

@@ -1,32 +1,298 @@
-.container{
+// src/app/components/header/header.component.scss
+
+// Configuración del menú PrimeNG
+:host ::ng-deep .p-menubar {
+  font-family: inherit;
+  padding: 0.15rem;
+  display: flex;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}
+
+:host ::ng-deep .p-menubar-root-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+:host ::ng-deep .p-menubar-item {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+// Asegurar que los dropdowns tengan el z-index correcto
+:host ::ng-deep .p-menubar-submenu {
+  z-index: 1001 !important;
+}
+
+:host ::ng-deep .p-menubar-overlay {
+  z-index: 1001 !important;
+}
+
+// Contenedor principal del header
+.header-container {
+  position: relative;
+  background-color: white;
+}
+
+// Barra superior del gobierno (siempre visible)
+.barra-superior-govco {
+  background-color: #0943b5;
+  width: 100%;
+  height: 2.45rem;
+  padding-left: .9rem;
+  position: relative;
+  z-index: 999;
+  padding-top: .35rem;
+}
+
+.header-govco-container{
+  max-width: 1320px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+
+.barra-superior-govco a {
+  content: url(https://cdn.www.gov.co/assets/images/logoGovCO.png);
+  height: 1.875rem;
+  width: 5.5rem;
+}
+
+.barra-superior-govco a:focus-visible {
+  outline: max(0.125rem, 0.15em) solid #FFFFFF;
+  border-radius: 0.313rem;
+}
+
+.barra-superior-govco .idioma-icon-barra-superior-govco {
+  height: 1.5rem;
+  width: 1.5rem;
+  border-radius: 0.313rem;
+  background-color: #FFFFFF;
+  cursor: pointer;
+  padding: 0;
+  border: 0.125rem solid #FFFFFF;
+  font-size: 10px;
+  position: absolute;
+  right: 5.375rem;
+}
+
+.barra-superior-govco .idioma-icon-barra-superior-govco:hover {
+  background-color: #004884;
+}
+
+.barra-superior-govco .idioma-icon-barra-superior-govco:focus {
+  outline: max(0.125rem, 0.15em) solid #FFFFFF;
+  outline-offset: max(0.188rem, 0.15em);
+}
+
+.barra-superior-govco .idioma-icon-barra-superior-govco::before {
+  font-family: "govco-font";
+  content: '\ec56';
+  color: #0943b5;
+  font-size: 14px;
+}
+
+.barra-superior-govco .idioma-icon-barra-superior-govco:hover::before {
+  color: #FFFFFF;
+}
+
+// Sección de logos (NO sticky)
+.logos-section-container {
+  background-color: white;
+  position: relative;
+  z-index: 998;
+  transition: all 0.3s ease;
+  height: auto;
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+}
+
+// Contenedor del menú (SÍ sticky)
+.menu-container {
+  background-color: #F6F8F9;
+  position: relative;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.menu-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+// Estado sticky del menú
+.menu-container.menu-sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: rgba(246, 248, 249, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  height: 55px;
+  
+  // Animación suave al volverse sticky
+  animation: slideDown 0.3s ease-out;
+}
+
+// Animación para cuando el menú se vuelve sticky
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Estados de scroll para efectos adicionales
+.header-container.scrolled {
+  .logos-section-container {    
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+// Mejoras de rendimiento
+.menu-container {
+  will-change: position, transform;
+  backface-visibility: hidden;
+}
+
+// Responsividad
+@media (max-width: 991px) {
+  .barra-superior-govco {
+    justify-content: center;
     padding: 0;
-    margin: 0;
+  }
+
+  .barra-superior-govco .idioma-icon-barra-superior-govco {
+    right: 1rem;
+  }
+
+  :host ::ng-deep .p-menubar-root-list {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .menu-container {
+    height: auto;
+    min-height: 50px;
+    padding: 0.5rem 0;
+  }
+
+  .menu-container.menu-sticky {
+    height: auto;
+    min-height: 55px;
+  }
 }
-.section-gov{
-    background-color: #3366CC;
-    height: 52px;
-    .logo{
-        width: 148px;
-        height: 30px;
-        margin: 12px 180px;
-    }
+
+@media (max-width: 768px) {
+  .menu-inner {
+    padding: 0 10px;
+  }
+  
+  :host ::ng-deep .p-menubar {
+    padding: 0.25rem;
+  }
+  
+  :host ::ng-deep .p-menubar-item {
+    font-size: 13px;
+  }
 }
-.section-icons{
-    background-color: white;
-    height: 120px;
-    .logo{
-        width: 342px;
-        height: 90px;
-        margin: 12px 180px;
-    }
+
+// Espaciado para el contenido principal cuando el menú es sticky
+// Esto evita que el contenido se oculte bajo el menú fijo
+body {
+  &.menu-is-sticky {
+    padding-top: 55px;
+  }
 }
-.section-menu{
-    background-color: #F6F8F9;
-    height: 40px;
-    .menu{
-        margin-left: 162px;
-    }
-    button{
-        padding: 0px 18px 0px 18px;
-    }
+
+// Opcional: efecto hover mejorado para items del menú
+:host ::ng-deep .p-menubar-item-link:hover {
+  background-color: rgba(51, 102, 204, 0.1);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+:host ::ng-deep .p-menubar-item-link:focus-visible {
+  outline: 3px solid #0943b5;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+#header-logos-container {
+  height: 90px !important;
+  max-width: 1320px;
+  width: 100%;
+  min-height: 90px;
+  max-height: 90px;
+  display: flex;
+  align-items: center;
+  padding: 15px 10px;
+  margin: 0 auto;
+}
+
+// Tablet
+@media (max-width: 991px) {
+  #header-logos-container {
+    height: 70px !important;
+    min-height: 70px;
+    max-height: 70px;
+    padding: 10px 20px;
+  }
+
+  #dnp-logo-container {
+    width: 180px !important;
+    flex-shrink: 0;
+  }
+}
+
+// Móvil
+@media (max-width: 768px) {
+  .logos-section-container {
+    min-height: 70px;
+  }
+
+  #header-logos-container {
+    height: auto !important;
+    min-height: unset;
+    max-height: unset;
+    padding: 8px 12px;
+    gap: 0.5rem;
+  }
+
+  #dnp-logo-container {
+    width: 130px !important;
+    flex-shrink: 0;
+    border-right-width: 1px !important;
+  }
+
+  #dnp-logo-container img {
+    width: 90% !important;
+  }
+
+  #site-logo-container {
+    padding-left: 12px !important;
+  }
+
+  #site-logo-container img {
+    width: 60% !important;
+  }
 }

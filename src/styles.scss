@@ -1,7 +1,400 @@
+@import "primeicons/primeicons.css";
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import './theme/sicodis-theme.scss';
+@import 'leaflet/dist/leaflet.css';
+@import './assets/styles/pnd-2026-tokens.scss'; // Imagen PND 2026–2030 (tokens --pnd-*)
 /* You can add global styles to this file, and also import other style files */
-@import "@angular/material/prebuilt-themes/indigo-pink.css";
+/* @import "@angular/material/prebuilt-themes/indigo-pink.css";
 body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+} */
+html {
+  font-family: "Work Sans", sans-serif;
+  font-size: 0.95rem !important;
+  --mat-menu-item-label-text-size: 0.8rem !important;
+  --mat-menu-item-label-text-font: "Work Sans", sans-serif;
+  --mat-select-trigger-text-size: 0.75rem !important;
+  --p-form-field-sm-font-size: 0.75rem !important;
+  --p-form-field-lg-font-size: 0.85rem !important;
+  --mat-option-label-text-size: 0.75rem !important;
+  --mdc-filled-text-field-label-text-size: 0.8rem !important;
+  --p-breadcrumb-padding: 0.5rem !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: light-dark(var(--p-surface-0), var(--p-surface-950));
+}
+
+/* Asegúrate de que los componentes de PrimeNG tengan z-index correcto */
+.p-component-overlay {
+  @apply z-50;
+}
+
+/* Ajustes adicionales para mejorar la integración */
+.p-button {
+  @apply focus:ring-2 focus:ring-offset-2 focus:ring-primary-500;
+}
+
+:root {
+  // Fuente por defecto (imagen clásica). El tema PND la cambia a Poppins vía
+  // `html[data-tema="pnd"]` (ver assets/styles/pnd-2026-tokens.scss).
+  --app-font-family: 'Work Sans', sans-serif;
+  --app-heading-weight: 600;
+  --app-body-weight: 400;
+
+  /* Dimensiones */
+  --input-height: 40px;           /* Altura reducida para inputs */
+  --input-padding: 0.5rem 0.75rem; /* Padding reducido */
+  --border-radius: 4px;           /* Radio de borde más pequeño */
+  --font-size: 14px;              /* Tamaño de fuente base */
+  --spacing-unit: 0.5rem;         /* Unidad de espaciado base */
+  --select-fixed-width: 240px;
+  --select-content-width: 200px;
+  --select-expanded-width: 360px;      /* Ancho máximo del panel desplegable */
+  --select-spacing: 16px;              /* Espaciado entre elementos */
+  --select-height: 40px;               /* Altura del select */
+}
+
+// Aplicar la fuente a los elementos de Angular Material
+.mat-typography,
+.mat-mdc-button,
+.mat-mdc-card,
+.mat-card-title,
+.mat-card-subtitle,
+.mat-mdc-form-field,
+.mat-mdc-menu-item,
+.mat-mdc-select,
+.mat-mdc-table,
+.mat-mdc-paginator,
+.mat-mdc-dialog-container,
+.mat-calendar,
+.mat-h1, .mat-headline, .mat-typography h1,
+.mat-h2, .mat-title, .mat-typography h2,
+.mat-h3, .mat-subheading-2, .mat-typography h3,
+.mat-h4, .mat-subheading-1, .mat-typography h4 {
+  font-family: var(--app-font-family) !important;
+}
+
+// Aplicar también a elementos HTML básicos para consistencia
+body,
+button,
+input,
+select,
+textarea,
+p, div, span, h1, h2, h3, h4, h5, h6 {
+  font-family: var(--app-font-family);
+}
+
+// Estilos específicos para los encabezados en tu dashboard
+.mat-h1, .mat-headline, .mat-typography h1 {
+  font-weight: var(--app-heading-weight);
+  margin-bottom: 16px;
+}
+
+.mat-h2, .mat-title, .mat-typography h2 {
+  font-weight: var(--app-heading-weight);
+  color: #455a64;
+}
+
+// Estilos para las tarjetas que has definido en tu dashboard
+.dashboard-card mat-card-title {
+  font-family: var(--app-font-family) !important;
+  font-weight: var(--app-heading-weight);
+}
+
+// Estilos para los gráficos de PrimeNG (que estás usando en tu aplicación)
+.p-chart {
+  font-family: var(--app-font-family) !important;
+}
+
+// Ajustes para los botones y menús de Material
+.mat-button-base,
+.mat-mdc-button-base,
+.mat-mdc-menu-item {
+  font-family: var(--app-font-family) !important;
+  font-weight: 500;
+}
+
+.mat-mdc-select-value-text{
+  font-size: 1rem !important;
+}
+
+.mat-mdc-option.mdc-list-item {
+  font-size: 1rem !important;
+}
+
+.mdc-floating-label {
+  font-size: 1rem !important;
+}
+
+// Ajustes para los selectores de PrimeNG
+.p-selectbutton .p-button {
+  font-family: var(--app-font-family) !important;
+}
+
+.mat-mdc-option {
+  min-height: 32px !important;
+}
+
+/* Personalización completa de componentes PrimeNG */
+:host ::ng-deep {
+  .p-field {
+    margin-bottom: 0;
+    width: 100%;
+
+    @media (min-width: 768px) {
+      width: var(--select-fixed-width) !important;
+      min-width: var(--select-fixed-width) !important;
+    }
+  }
+
+  p-select {
+    .p-select {
+      width: 100%; /* Asegurar que ocupa el ancho del contenedor */
+
+      .p-select-label {
+        /* Truncar el texto largo con puntos suspensivos */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%; /* Limitar al ancho del contenedor */
+      }
+    }
+
+    /* Panel desplegable - ancho fijo pero permitir más espacio para opciones largas */
+    .p-select-panel {
+      width: auto !important; /* Anular el width: 100% que PrimeNG aplica por defecto */
+      min-width: 240px; /* Mínimo igual al ancho del select */
+      max-width: 360px; /* Máximo para valores muy largos */
+
+      .p-select-items {
+        .p-select-item {
+          /* Permitir múltiples líneas en los items si son muy largos */
+          white-space: normal;
+          word-break: break-word;
+        }
+      }
+    }
+  }
+
+  /* ===== Botones ===== */
+  .p-button {
+    height: var(--input-height);
+    padding: 0 calc(var(--spacing-unit) * 2);
+    font-size: var(--font-size);
+    font-weight: 500;
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+
+    .p-button-icon {
+      font-size: 0.85rem;
+      margin-right: calc(var(--spacing-unit) * 0.75);
+    }
+
+    &.p-button-sm {
+      height: calc(var(--input-height) * 0.85);
+      padding: 0 calc(var(--spacing-unit) * 1.5);
+      font-size: calc(var(--font-size) * 0.85);
+    }
+
+    &.p-button-lg {
+      height: calc(var(--input-height) * 1.2);
+      padding: 0 calc(var(--spacing-unit) * 2.5);
+      font-size: calc(var(--font-size) * 1.1);
+    }
+  }
+
+  /* ===== SplitButton ===== */
+  p-splitButton {
+    .p-splitbutton {
+      .p-button {
+        height: var(--input-height);
+      }
+
+      .p-splitbutton-menubutton {
+        height: var(--input-height);
+        width: 2.5rem;
+      }
+    }
+
+    .p-menu {
+      border-radius: var(--border-radius);
+      padding: calc(var(--spacing-unit) * 0.5) 0;
+
+      .p-menuitem {
+        .p-menuitem-link {
+          padding: calc(var(--spacing-unit) * 0.75) var(--spacing-unit);
+          font-size: var(--font-size);
+
+          .p-menuitem-icon {
+            font-size: 0.85rem;
+            margin-right: calc(var(--spacing-unit) * 0.75);
+          }
+
+          &:hover {
+            background-color: rgba(59, 130, 246, 0.04);
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+// src/styles.scss (o en tu archivo de estilos globales)
+
+// Asegurar que no haya conflictos con el sticky header
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+// Clase auxiliar para contenido principal que evita solapamiento con header fijo
+.main-content {
+  position: relative;
+  z-index: 1;
+}
+
+// Opcional: Animación suave para cuando el header cambia de tamaño
+* {
+  box-sizing: border-box;
+}
+
+// Asegurar que los dropdowns del menú tengan z-index correcto
+:host ::ng-deep .p-menubar-submenu {
+  z-index: 1001 !important;
+}
+
+:host ::ng-deep .p-menubar-overlay {
+  z-index: 1001 !important;
+}
+
+// Mejoras de rendimiento para animaciones
+.container {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+// ============================================================
+// ACCESIBILIDAD — Indicador de foco visible (WCAG 2.4.7 / CC17)
+// ============================================================
+
+// Eliminar outline solo cuando el foco proviene del mouse/touch
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+// Foco visible al navegar con teclado — aplica a toda la app
+*:focus-visible {
+  outline: 3px solid #0943b5;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+// Refuerzo sobre PrimeNG (puede resetear el outline en sus componentes)
+.p-button:focus-visible,
+.p-menuitem-link:focus-visible,
+.p-select:focus-visible,
+.p-multiselect:focus-visible,
+.p-inputtext:focus-visible,
+.p-checkbox:focus-visible,
+.p-radiobutton:focus-visible {
+  outline: 3px solid #0943b5 !important;
+  outline-offset: 2px;
+}
+
+// ============================================================
+// IMPRESIÓN — Hoja de estilos para @media print (2.16)
+// ============================================================
+@media print {
+  app-header,
+  app-footer,
+  .p-menubar,
+  .barra-superior-govco,
+  .logos-section-container,
+  p-dialog,
+  .p-dialog-mask,
+  [class*="filter-"],
+  .p-button {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 12pt;
+  }
+
+  main,
+  .main-content,
+  router-outlet + * {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  // Mostrar URL de los enlaces al imprimir
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    word-break: break-all;
+  }
+
+  // Evitar cortes de página dentro de tablas y tarjetas
+  table,
+  .p-card,
+  mat-card {
+    page-break-inside: avoid;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+}
+
+// Opcional: Efecto de blur en el fondo cuando hay scroll (para navegadores modernos)
+@supports (backdrop-filter: blur(10px)) {
+  .container.scrolled {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+}
+
+// SGR — Información General: acotar el panel de los multiselect de
+// "Caracterización de la consulta" al ancho del campo y truncar nombres
+// largos (el filtro de Asignación se abría demasiado). El overlay de PrimeNG
+// se anexa fuera del componente, por eso la regla vive en estilos globales.
+.p-multiselect-overlay.caracterizacion-panel {
+  // PrimeNG fija min-width:100% (resuelto contra un ancestro ancho) y el panel
+  // crece a su contenido; anulamos ese piso y lo topamos al ancho de la columna.
+  min-width: 0 !important;
+  max-width: 300px !important;
+
+  .p-multiselect-list-container,
+  .p-multiselect-items-wrapper {
+    overflow-x: hidden;
+  }
+
+  .p-multiselect-option {
+    overflow: hidden;
+
+    > span:not(.p-ink) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+  }
 }
